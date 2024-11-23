@@ -21,3 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "HappyMoonDayHwRealizer12"
 include(":app")
+include(":presentation")
+include(":domain")
+include(":data")
+include(":local")
+include(":remote")
