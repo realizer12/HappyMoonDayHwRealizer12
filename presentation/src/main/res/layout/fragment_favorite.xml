@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:haymoon="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -12,20 +13,15 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_toolbar"
+        <com.happymoonday.design.widget.HayMoonToolbar
+            android:id="@+id/haymoon_toolbar"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
-            android:gravity="start|center_vertical"
-            android:paddingStart="10dp"
-            android:text="@string/favorite"
-            android:textColor="@color/black"
-            android:textSize="25dp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="wrap"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            haymoon:toolbarBackBtnVisibility="false"
+            haymoon:toolbarText="@string/favorite"
+            haymoon:toolbarTextVisibility="true" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

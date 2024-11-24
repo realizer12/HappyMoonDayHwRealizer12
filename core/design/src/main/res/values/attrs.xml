@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="HayMoonToolbar">
+        <attr name="toolbarText" format="string" />
+        <attr name="toolbarBackBtnVisibility" format="boolean"/>
+        <attr name="toolbarTextVisibility" format="boolean"/>
+    </declare-styleable>
+</resources>

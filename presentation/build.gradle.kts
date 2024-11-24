@@ -30,6 +30,8 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":core:design"))
+    implementation(project(":core:exception"))
 
     //compose
     implementation(platform(libs.compose.bom))

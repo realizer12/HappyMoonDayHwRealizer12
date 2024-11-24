@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:haymoon="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -12,21 +13,16 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_toolbar"
+        <com.happymoonday.design.widget.HayMoonToolbar
+            android:id="@+id/haymoon_toolbar"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
-            android:gravity="start|center_vertical"
-            android:paddingStart="10dp"
-            android:text="@string/seoul_art_center"
-            android:textColor="@color/black"
-            android:textSize="25dp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_default="wrap"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            haymoon:toolbarText="@string/seoul_art_center"
+            haymoon:toolbarBackBtnVisibility="false"
+            haymoon:toolbarTextVisibility="true" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_goto_search_view"
@@ -43,7 +39,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_toolbar"
+            app:layout_constraintTop_toBottomOf="@+id/haymoon_toolbar"
             app:layout_constraintVertical_bias="0.5"
             app:layout_constraintWidth_percent="0.5" />
 
