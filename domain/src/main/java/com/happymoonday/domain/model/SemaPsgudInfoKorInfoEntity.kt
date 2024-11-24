@@ -4,7 +4,7 @@ package com.happymoonday.domain.model
  * @param semaPsgudInfoList  미술품 정보 리스트
  */
 data class SemaPsgudInfoKorInfoEntity(
-    val semaPsgudInfoList: List<SemaPsgudInfoKorInfoRowEntity>
+    val semaPsgudInfoList: List<SemaPsgudInfoKorInfoRowEntity>,
 )
 
 /**
@@ -27,5 +27,5 @@ data class SemaPsgudInfoKorInfoRowEntity(
     val productStandard: String,
     val materialTechInfo: String,
     val mainImage: String,
-    val thumbNailImage: String
+    val thumbNailImage: String,
 )

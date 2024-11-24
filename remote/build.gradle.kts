@@ -30,6 +30,7 @@ android {
 
 dependencies {
     implementation(project(":data"))
+    implementation(project(":core:exception"))
 
     implementation(libs.bundles.retrofit)
     implementation(libs.okhttp.logging.interceptor)

@@ -2,6 +2,7 @@
 
 #App 설정 정보
 compileSdk = "34"
+javaxInject = "1"
 minSdk = "26"
 targetSdk = "34"
 versionCode = "1"
@@ -31,6 +32,7 @@ jetbrainsKotlinJvm = "2.0.20"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

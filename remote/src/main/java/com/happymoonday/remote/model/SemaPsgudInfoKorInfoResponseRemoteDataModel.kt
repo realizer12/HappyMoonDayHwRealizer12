@@ -8,19 +8,25 @@ import com.happymoonday.remote.mapper.ToDataMapper
 import com.happymoonday.remote.model.ResultRemoteDataModel.Companion.toData
 import com.happymoonday.remote.model.SemaPsgudInfoKorInfoRemoteDataModel.Companion.toData
 import com.happymoonday.remote.model.SemaPsgudInfoKorInfoRowRemoteDataModel.Companion.toData
+import com.happymoonday.remote.util.SeoulArtApiResponseType
 
 /**
  * remote datasource 쪽 response data model
  *
  **/
 data class SemaPsgudInfoKorInfoResponseRemoteDataModel(
-    val semaPsgudInfoKorInfoResponse: SemaPsgudInfoKorInfoRemoteDataModel,
+    val SemaPsgudInfoKorInfo: SemaPsgudInfoKorInfoRemoteDataModel?,
+    val RESULT: ResultRemoteDataModel?,
 ) {
     internal companion object :
         ToDataMapper<SemaPsgudInfoKorInfoResponseRemoteDataModel, SemaPsgudInfoKorInfoResponseDataModel> {
         override fun SemaPsgudInfoKorInfoResponseRemoteDataModel.toData(): SemaPsgudInfoKorInfoResponseDataModel {
             return SemaPsgudInfoKorInfoResponseDataModel(
-                semaPsgudInfoKorInfoResponse = semaPsgudInfoKorInfoResponse.toData()
+                semaPsgudInfoKorInfoResponse = SemaPsgudInfoKorInfo?.toData(),
+                RESULT = RESULT?.toData() ?: ResultDataModel(
+                    SeoulArtApiResponseType.NO_DATA.code,
+                    "검색 결과가 없습니다."
+                )
             )
         }
     }
@@ -80,17 +86,17 @@ data class ResultRemoteDataModel(
  * @param thumb_image 썸네일이미지
  **/
 data class SemaPsgudInfoKorInfoRowRemoteDataModel(
-    val prdct_cl_nm: String,
-    val manage_no_year: String,
-    val prdct_nm_korean: String,
-    val prdct_nm_eng: String,
     val prdct_stndrd: String,
     val mnfct_year: String,
     val matrl_technic: String,
-    val prdct_detail: String,
     val writr_nm: String,
     val main_image: String,
     val thumb_image: String,
+    val prdct_cl_nm: String?,
+    val manage_no_year: String?,
+    val prdct_nm_korean: String?,
+    val prdct_nm_eng: String?,
+    val prdct_detail: String?,
 ) {
     internal companion object :
         ToDataMapper<SemaPsgudInfoKorInfoRowRemoteDataModel, SemaPsgudInfoKorInfoRowDataModel> {

@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
  */
 @Parcelize
 data class SemaPsgudInfoKorInfoUiModel(
-    val semaPsgudInfoList: List<SemaPsgudInfoKorInfoRowUiModel>
+    val semaPsgudInfoList: List<SemaPsgudInfoKorInfoRowUiModel>,
 ) : Parcelable {
     internal companion object :
         FromEntityMapper<SemaPsgudInfoKorInfoUiModel, SemaPsgudInfoKorInfoEntity> {
@@ -45,7 +45,7 @@ data class SemaPsgudInfoKorInfoRowUiModel(
     val productStandard: String,
     val materialTechInfo: String,
     val mainImage: String,
-    val thumbNailImage: String
+    val thumbNailImage: String,
 ) : Parcelable {
     internal companion object :
         FromEntityMapper<SemaPsgudInfoKorInfoRowUiModel, SemaPsgudInfoKorInfoRowEntity> {

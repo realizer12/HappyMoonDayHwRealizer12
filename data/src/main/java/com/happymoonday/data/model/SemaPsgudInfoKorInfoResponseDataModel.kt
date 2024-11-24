@@ -3,17 +3,19 @@ package com.happymoonday.data.model
 import com.happymoonday.data.mapper.ToEntityMapper
 import com.happymoonday.data.model.SemaPsgudInfoKorInfoRowDataModel.DataMapper.toEntity
 import com.happymoonday.domain.model.SemaPsgudInfoKorInfoEntity
+import com.happymoonday.domain.model.SemaPsgudInfoKorInfoRowEntity
 
 /**
  * data 레이어쪽 response data model
  */
 data class SemaPsgudInfoKorInfoResponseDataModel(
-    val semaPsgudInfoKorInfoResponse: SemaPsgudInfoKorInfoDataModel,
+    val semaPsgudInfoKorInfoResponse: SemaPsgudInfoKorInfoDataModel?,
+    val RESULT: ResultDataModel,
 ){
     internal companion object : ToEntityMapper<SemaPsgudInfoKorInfoResponseDataModel,SemaPsgudInfoKorInfoEntity>{
         override fun SemaPsgudInfoKorInfoResponseDataModel.toEntity(): SemaPsgudInfoKorInfoEntity {
             return SemaPsgudInfoKorInfoEntity(
-                semaPsgudInfoList = semaPsgudInfoKorInfoResponse.rowDataModel.map { it.toEntity() }
+                semaPsgudInfoList = semaPsgudInfoKorInfoResponse?.rowDataModel?.map { it.toEntity() }?: emptyList()
             )
         }
     }
@@ -27,7 +29,7 @@ data class SemaPsgudInfoKorInfoResponseDataModel(
 data class SemaPsgudInfoKorInfoDataModel(
     val list_total_count: Int,
     val RESULT: ResultDataModel,
-    val rowDataModel: List<SemaPsgudInfoKorInfoRowDataModel>
+    val rowDataModel: List<SemaPsgudInfoKorInfoRowDataModel>,
 )
 
 /**
@@ -47,31 +49,31 @@ data class ResultDataModel(
  * @param prdct_stndrd 작품규격
  * @param mnfct_year 제작년도
  * @param matrl_technic 재료/기법
- * @param prdct_detail 작가명
+ * @param prdct_detail 작품설명
  * @param writr_nm 작가명
  * @param main_image 메인이미지
  * @param thumb_image 썸네일이미지
  **/
 data class SemaPsgudInfoKorInfoRowDataModel(
-    val prdct_cl_nm: String,
-    val manage_no_year: String,
-    val prdct_nm_korean: String,
-    val prdct_nm_eng: String,
+    val prdct_cl_nm: String?,
+    val manage_no_year: String?,
+    val prdct_nm_korean: String?,
+    val prdct_nm_eng: String?,
     val prdct_stndrd: String,
     val mnfct_year: String,
     val matrl_technic: String,
-    val prdct_detail: String,
+    val prdct_detail: String?,
     val writr_nm: String,
     val main_image: String,
     val thumb_image: String,
 ) {
     internal companion object DataMapper :
-        ToEntityMapper<SemaPsgudInfoKorInfoRowDataModel, com.happymoonday.domain.model.SemaPsgudInfoKorInfoRowEntity> {
-        override fun SemaPsgudInfoKorInfoRowDataModel.toEntity(): com.happymoonday.domain.model.SemaPsgudInfoKorInfoRowEntity {
-            return com.happymoonday.domain.model.SemaPsgudInfoKorInfoRowEntity(
-                productCategory = prdct_cl_nm,
-                dateOfCollection = manage_no_year,
-                productName = prdct_nm_korean,
+        ToEntityMapper<SemaPsgudInfoKorInfoRowDataModel, SemaPsgudInfoKorInfoRowEntity> {
+        override fun SemaPsgudInfoKorInfoRowDataModel.toEntity(): SemaPsgudInfoKorInfoRowEntity {
+            return SemaPsgudInfoKorInfoRowEntity(
+                productCategory = prdct_cl_nm?:"부문 미상",
+                dateOfCollection = manage_no_year?:"수집년도 미상",
+                productName = prdct_nm_korean?:"작품명 미상",
                 writerName = writr_nm,
                 productStandard = prdct_stndrd,
                 dateOfMade = mnfct_year,

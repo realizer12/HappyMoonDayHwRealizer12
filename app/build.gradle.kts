@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":remote"))
     implementation(project(":local"))
+    implementation(project(":core:exception"))
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)

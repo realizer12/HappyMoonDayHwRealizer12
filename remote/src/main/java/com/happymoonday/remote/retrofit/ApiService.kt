@@ -1,6 +1,8 @@
 package com.happymoonday.remote.retrofit
 
+import com.happymoonday.remote.BuildConfig
 import com.happymoonday.remote.model.SemaPsgudInfoKorInfoResponseRemoteDataModel
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -28,11 +30,11 @@ interface ApiService {
     **/
     @GET("{key}/json/SemaPsgudInfoKorInfo/{startIndex}/{endIndex}/{category}/{manageYear}/{productNameKR}")
     suspend fun getArtworks(
-        @Path("key") authenticationKey: String,
+        @Path("key") authenticationKey: String = BuildConfig.SEOUL_AUTHENTICATION_KEY,
         @Path("startIndex") startIndex: Int,
         @Path("endIndex") endIndex: Int,
         @Path("category") category: String,
         @Path("manageYear") manageYear: String,
         @Path("productNameKR") productNameKR: String
-    ):Result<SemaPsgudInfoKorInfoResponseRemoteDataModel>
+    ): Response<SemaPsgudInfoKorInfoResponseRemoteDataModel>
 }
