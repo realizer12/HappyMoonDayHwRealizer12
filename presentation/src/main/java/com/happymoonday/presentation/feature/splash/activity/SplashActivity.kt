@@ -30,8 +30,11 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
             setKeepOnScreenCondition { true }//splash screeen theme로 계속 유지
         }
     }
-
     private fun initSet() {
+        goToMainScreen()
+    }
+    //메인으로 가기
+    private fun goToMainScreen(){
         lifecycleScope.launch {
             delay(1500L)//1500ms동안 splash screen 유지
             startActivity(Intent(this@SplashActivity, MainActivity::class.java))

@@ -28,12 +28,11 @@ abstract class BaseFragment<VDB: ViewDataBinding>(
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
-        binding.onCreateView(savedInstanceState)
-
+        binding.onCreateView()
         return binding.root
     }
 
-    abstract fun VDB.onCreateView(savedInstanceState: Bundle?)
+    abstract fun VDB.onCreateView()
 
     fun showToast(msg:String){
         Toast.makeText(requireActivity(),msg, Toast.LENGTH_SHORT).show()

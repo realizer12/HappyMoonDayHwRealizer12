@@ -31,6 +31,9 @@ roomVersion = "2.6.1"
 jetbrainsKotlinJvm = "2.0.20"
 androidSplashScreen = "1.0.1"
 
+#jetpack navigation
+jetpackNavigation = "2.8.4"
+
 #compose 라이브러리 버전
 coilComposeVersion = "2.7.0"
 composeBomVersion = "2024.11.00"
@@ -73,10 +76,16 @@ compose-ui-tooling = {module = "androidx.compose.ui:ui-tooling"}
 compose-material3 = {module = "androidx.compose.material3:material3"}
 compose-coil = {module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion"}
 
+#jetpack navigation
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "jetpackNavigation" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "jetpackNavigation" }
+
+
 [bundles]
 androidx-room = ["androidx-room", "androidx-room-ktx", "androidx-room-compiler" ]
 retrofit = ["retrofit", "retrofit-converter-gson"]
 compose = ["compose-activity","compose-ui","compose-ui-graphics","compose-ui-tooling-preview","compose-material3","compose-ui-tooling"]
+androidx-navigation = ["androidx-navigation-fragment-ktx", "androidx-navigation-ui-ktx"]
 
 
 [plugins]
