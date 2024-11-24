@@ -9,5 +9,6 @@ kotlin {
 }
 
 dependencies {
+    implementation(project(":core:exception"))
     implementation(libs.javax.inject)
 }

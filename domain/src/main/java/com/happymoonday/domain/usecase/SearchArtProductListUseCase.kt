@@ -1,5 +1,7 @@
 package com.happymoonday.domain.usecase
 
+import com.happymoonday.core.exception.ClientHandleCodeType
+import com.happymoonday.core.exception.HayMoonException
 import com.happymoonday.domain.repository.ProductRepository
 import javax.inject.Inject
 
@@ -11,15 +13,15 @@ import javax.inject.Inject
  * @author LeeDongHun
  *
  *
-**/
+ **/
 class SearchArtProductListUseCase @Inject constructor(
     private val productRepository: ProductRepository
-){
+) {
     suspend operator fun invoke(
         startIndex: Int,
         endIndex: Int,
-        category: String,
-        manageYear: String,
+        category: String = " ",
+        manageYear: String = " ",
         productNameKR: String
     ) = productRepository.getSearchedProducts(
         startIndex = startIndex,
@@ -27,5 +29,10 @@ class SearchArtProductListUseCase @Inject constructor(
         category = category,
         manageYear = manageYear,
         productNameKR = productNameKR
-    )
+    ).map { response ->
+        response.semaPsgudInfoList.ifEmpty {
+            throw HayMoonException.UiHandlerException(code = ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN)
+        }
+        response
+    }
 }

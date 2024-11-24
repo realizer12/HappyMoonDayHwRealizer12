@@ -38,6 +38,12 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.compose.coil)
 
+    implementation(libs.androidx.recyclerview)
+
+    //glide
+    implementation(libs.glide)
+    implementation(libs.glide.compiler)
+
     implementation(libs.androidx.splash.screen)
 
     implementation(libs.hilt.android)

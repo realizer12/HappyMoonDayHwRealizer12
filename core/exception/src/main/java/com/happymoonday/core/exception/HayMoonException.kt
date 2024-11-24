@@ -27,7 +27,7 @@ sealed class HayMoonException(message: String = "") : Exception(message) {
     /**
      * ui 처리해줘야 하는 exception
     **/
-    data class UiHandlerException(override val message: String = "",val code:Int) :
+    data class UiHandlerException(override val message: String = "",val code:ClientHandleCodeType) :
         HayMoonException(message = message)
 }
 

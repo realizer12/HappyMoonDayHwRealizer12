@@ -45,7 +45,7 @@ class ProductRemoteDataSourceImpl @Inject constructor(
             SeoulArtApiResponseType.NO_DATA.code -> {//검색 결과가 없을때
                 throw HayMoonException.UiHandlerException(
                     message = seoulApiResultCode.MESSAGE,
-                    code = ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN.code
+                    code = ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN
                 )
             }
             else -> {
