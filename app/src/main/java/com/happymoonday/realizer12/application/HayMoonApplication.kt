@@ -2,7 +2,6 @@ package com.happymoonday.realizer12.application
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 /**
  * Create Date: 2024. 11. 23.
@@ -16,8 +15,4 @@ import dagger.hilt.android.lifecycle.HiltViewModel
  *
 **/
 @HiltAndroidApp
-class HayMoonApplication:Application() {
-    override fun onCreate() {
-        super.onCreate()
-    }
-}
+class HayMoonApplication:Application()
