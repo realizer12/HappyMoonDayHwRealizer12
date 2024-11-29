@@ -9,16 +9,19 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * @param semaPsgudInfoList  미술품 정보 리스트
+ * @param searchDataNextStartIndex 다음 페이징의 시작 인덱스
  */
 @Parcelize
 data class SemaPsgudInfoKorInfoUiModel(
     val semaPsgudInfoList: List<SemaPsgudInfoKorInfoRowUiModel>,
+    var searchDataNextStartIndex:Int,
 ) : Parcelable {
     internal companion object :
         FromEntityMapper<SemaPsgudInfoKorInfoUiModel, SemaPsgudInfoKorInfoEntity> {
         override fun SemaPsgudInfoKorInfoEntity.fromEntity(): SemaPsgudInfoKorInfoUiModel {
             return SemaPsgudInfoKorInfoUiModel(
-                semaPsgudInfoList = semaPsgudInfoList.map { it.fromEntity() }
+                semaPsgudInfoList = semaPsgudInfoList.map { it.fromEntity() },
+                searchDataNextStartIndex = searchDataNextStartIndex
             )
         }
     }

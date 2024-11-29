@@ -49,9 +49,9 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
 
         //검색 버튼 클릭
         binding.btnSearch.setOnClickListener {
-            //만약 검색어가 없는 경우 처리 early return 처리
-            isSearchKeywordInput() ?: return@setOnClickListener
+            checkSearchKeywordInputOrNull() ?: return@setOnClickListener
             binding.editSearchArt.hideSoftKeyboard(this)
+
             //검색어가 있는 경우, 미술품 검색 리스트 조회
             searchViewModel.searchArtProductList(
                 keyword = binding.editSearchArt.text.toString()
@@ -101,8 +101,9 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         }
     }
 
-    //검색어 입력 안했을 여부 체크 및 토스트 알림
-    private fun isSearchKeywordInput(): Unit? {
+    //검색어 입력 안했을 여부 체크 -> 입력 안 했으면 null 반환
+    //검색어 입력 안했을 경우 토스트 메세지 보여줌
+    private fun checkSearchKeywordInputOrNull(): Unit? {
         if (binding.editSearchArt.text.toString().isEmpty()) {
             showToast(getString(R.string.search_hint))
             return null

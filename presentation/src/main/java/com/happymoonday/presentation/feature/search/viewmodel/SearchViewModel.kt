@@ -37,47 +37,61 @@ class SearchViewModel @Inject constructor(
     //error 이벤트 LiveData
     private val _errorToast = MutableLiveData<SingleEvent<String>>()
     val errorToast: LiveData<SingleEvent<String>> = _errorToast
-    
+
+    //검색 데이터 시작 인덱스
+    private var searchDataStartIndex = 0
+
+    //이전 검색어 - 페이징시 계속 사용
+    private var pastSearchKeyWord:String = ""
+
     /**
      * 미술품 검색 리스트 조회
-    **/
-    fun searchArtProductList(keyword: String) {
+     *
+     * @param keyword 검색어 -> 기본값을 이전 pastSearchKeyWord로 설정하여, 다음 페이지 요청시에는 이전 검색어로 계속 요청
+     * @param isNextPageRequest  다음 페이지 요청이 아닌 경우 검색어 초기화 및 startIndex 초기화, 검색에서는 그냥 keyword만 넣어주게 default false로 적용
+     **/
+    fun searchArtProductList(
+        keyword: String = pastSearchKeyWord,
+        isNextPageRequest: Boolean = false
+    ) {
+        //다음 페이지 요청이 아니라면 검색 다시 하는 것이므로, startIndex 초기화 및 이전 검색어 초기화
+        if (!isNextPageRequest) {
+            pastSearchKeyWord = keyword
+            searchDataStartIndex = 0
+        }
+
         viewModelScope.launch {
             showProgress(isShow = true)
             searchArtProductListUseCase(
-                startIndex = 0,
-                endIndex = 10,
+                startIndex = searchDataStartIndex,
                 productNameKR = keyword
             ).map {
                 it.fromEntity()
             }.onSuccess {
                 showProgress(isShow = false)
+                searchDataStartIndex = it.searchDataNextStartIndex //다음 페이징 start index 넣어줌
                 _searchArtProductList.value = it.semaPsgudInfoList
             }.onFailure {
                 showProgress(isShow = false)
-                when(it){
-                    is HayMoonException.UiHandlerException ->{
-                        if(it.code == ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN){//검색 결과가 없는 경우
+                when (it) {
+                    is HayMoonException.UiHandlerException -> {
+                        if (it.code == ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN) {
                             clearSearchedDataWhenNoSearchResult()
                         }
                     }
                     is HayMoonException.ToastException -> _errorToast.value = SingleEvent(it.message)
-                    else -> println("error : ${it.message}")
+                    is HayMoonException.NonFatalException -> println("error : ${it.message}")
                 }
             }
         }
     }
 
-    /**
-     * progress bar 보여주기 여부
-    **/
+    //progress bar 보여주기 여부
     private fun showProgress(isShow: Boolean){
         _progress.value = isShow
     }
 
-    /**
-     * 검색된 리스트 초기화
-    **/
+    //검색된 리스트 초기화
     private fun clearSearchedDataWhenNoSearchResult(){
         _searchArtProductList.value = emptyList()
     }

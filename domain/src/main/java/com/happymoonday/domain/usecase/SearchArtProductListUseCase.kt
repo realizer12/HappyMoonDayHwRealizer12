@@ -17,9 +17,24 @@ import javax.inject.Inject
 class SearchArtProductListUseCase @Inject constructor(
     private val productRepository: ProductRepository
 ) {
+
+    private companion object {
+        //검색 데이터 범위
+        const val SEARCH_DATA_RANGE = 100
+    }
+
+    /**
+     * 미술품 검색 리스트 조회
+     *
+     * @param startIndex 요청 시작 인덱스
+     * @param endIndex 요청 종료 인덱스 -> 시작 index에서  SEARCH_DATA_RANGE 개씩 증가
+     * @param category 부문
+     * @param manageYear 수집년도
+     * @param productNameKR 작품명(국문)
+     **/
     suspend operator fun invoke(
         startIndex: Int,
-        endIndex: Int,
+        endIndex: Int = startIndex + SEARCH_DATA_RANGE,
         category: String = " ",
         manageYear: String = " ",
         productNameKR: String
@@ -28,11 +43,15 @@ class SearchArtProductListUseCase @Inject constructor(
         endIndex = endIndex,
         category = category,
         manageYear = manageYear,
-        productNameKR = productNameKR
+        productNameKR = productNameKR,
     ).map { response ->
-        response.semaPsgudInfoList.ifEmpty {
+        if (response.semaPsgudInfoList.isEmpty() && startIndex == 0) {//첫번째 페이지이고 검색 결과가 없을때 error 던짐
             throw HayMoonException.UiHandlerException(code = ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN)
         }
-        response
+        response.apply {
+            searchDataNextStartIndex =
+                endIndex//다음 페이징 시작 index는 현재 요청 endIndex + SEARCH_DATA_RANGE로 return해준다.
+        }
     }
+
 }

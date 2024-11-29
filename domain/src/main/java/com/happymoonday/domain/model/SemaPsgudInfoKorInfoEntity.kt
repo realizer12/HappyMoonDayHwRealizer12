@@ -2,9 +2,11 @@ package com.happymoonday.domain.model
 
 /**
  * @param semaPsgudInfoList  미술품 정보 리스트
+ * @param searchDataNextStartIndex 다음 페이징의 시작 인덱스
  */
 data class SemaPsgudInfoKorInfoEntity(
     val semaPsgudInfoList: List<SemaPsgudInfoKorInfoRowEntity>,
+    var searchDataNextStartIndex:Int = 0,
 )
 
 /**
