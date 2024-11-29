@@ -4,7 +4,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import com.happymoonday.core.exception.ClientHandleCodeType
 import com.happymoonday.presentation.R
 import com.happymoonday.presentation.base.BaseActivity
 import com.happymoonday.presentation.databinding.ActivitySearchBinding
@@ -22,9 +21,9 @@ import dagger.hilt.android.AndroidEntryPoint
  * @author LeeDongHun
  *
  *
-**/
+ **/
 @AndroidEntryPoint
-class SearchActivity:BaseActivity<ActivitySearchBinding>(R.layout.activity_search) {
+class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_search) {
 
     private lateinit var searchItemRvAdapter: SearchItemRvAdapter
     private val searchViewModel: SearchViewModel by viewModels()
@@ -34,12 +33,14 @@ class SearchActivity:BaseActivity<ActivitySearchBinding>(R.layout.activity_searc
         setListenerEvent()
         getDataFromVm()
     }
-    private fun initSet(){
+
+    private fun initSet() {
         searchItemRvAdapter = SearchItemRvAdapter()
         binding.rvSearchedArtProductList.apply {
             adapter = searchItemRvAdapter
         }
     }
+
     private fun setListenerEvent() {
         //toolbar 뒤로가기 클릭
         binding.haymoonToolbar.setOnBackButtonClickListener {
@@ -48,7 +49,10 @@ class SearchActivity:BaseActivity<ActivitySearchBinding>(R.layout.activity_searc
 
         //검색 버튼 클릭
         binding.btnSearch.setOnClickListener {
+            //만약 검색어가 없는 경우 처리 early return 처리
+            isSearchKeywordInput() ?: return@setOnClickListener
             binding.editSearchArt.hideSoftKeyboard(this)
+            //검색어가 있는 경우, 미술품 검색 리스트 조회
             searchViewModel.searchArtProductList(
                 keyword = binding.editSearchArt.text.toString()
             )
@@ -57,53 +61,57 @@ class SearchActivity:BaseActivity<ActivitySearchBinding>(R.layout.activity_searc
         //검색 결과 리스트 클릭
         searchItemRvAdapter.setItemClickListener(object : SearchItemRvAdapter.ItemClickListener {
             override fun onClickItem(item: SemaPsgudInfoKorInfoRowUiModel) {
-
+                showToast(item.productName)
             }
         })
 
+        //키보드 검색 버튼 클릭 처리
         binding.editSearchArt.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     binding.btnSearch.performClick()
                     true
                 }
+
                 else -> false
             }
         }
     }
 
-    private fun getDataFromVm(){
-
+    private fun getDataFromVm() {
         //검색된 미술품 리스트 뿌려줌
-        searchViewModel.searchArtProductList.observe(this){
-            it.takeIf {it.isNotEmpty() }?.let { items ->
+        searchViewModel.searchArtProductList.observe(this) {
+            it.takeIf { it.isNotEmpty() }?.let { items ->
                 binding.clNoSearchResult.isVisible = false
                 searchItemRvAdapter.submitList(items)
-            } ?: run {
+            } ?: run {//검색결과 없는 경우 검색결과 없음 보여주고 리스트 초기화
                 showNoSearchResultView()
+                searchItemRvAdapter.submitList(null)
             }
         }
 
         //에러 토스트 띄움
-        searchViewModel.errorToast.observe(this,SingleEventObserver{
+        searchViewModel.errorToast.observe(this, SingleEventObserver {
             showToast(it)
         })
 
-        //클라이언트 핸들러 에러
-        searchViewModel.clientHandleError.observe(this,SingleEventObserver{
-           if(it == ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN){
-               showNoSearchResultView()
-           }
-        })
-
         //로딩바
-        searchViewModel.progress.observe(this){
+        searchViewModel.progress.observe(this) {
             binding.pgSearchArt.isVisible = it
         }
     }
 
+    //검색어 입력 안했을 여부 체크 및 토스트 알림
+    private fun isSearchKeywordInput(): Unit? {
+        if (binding.editSearchArt.text.toString().isEmpty()) {
+            showToast(getString(R.string.search_hint))
+            return null
+        }
+        return Unit
+    }
+
     //검색 결과 없음 뷰 보여줌
-    private fun showNoSearchResultView(){
+    private fun showNoSearchResultView() {
         binding.clNoSearchResult.visibility = View.VISIBLE
         binding.tvNoSearchResult.text = String.format(
             getString(R.string.no_search_result),

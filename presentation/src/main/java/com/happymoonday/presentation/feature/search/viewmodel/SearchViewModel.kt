@@ -37,15 +37,13 @@ class SearchViewModel @Inject constructor(
     //error 이벤트 LiveData
     private val _errorToast = MutableLiveData<SingleEvent<String>>()
     val errorToast: LiveData<SingleEvent<String>> = _errorToast
-
-    private val _clientHandleError = MutableLiveData<SingleEvent<ClientHandleCodeType>>()
-    val clientHandleError: LiveData<SingleEvent<ClientHandleCodeType>> = _clientHandleError
-
+    
+    /**
+     * 미술품 검색 리스트 조회
+    **/
     fun searchArtProductList(keyword: String) {
-        showProgress(isShow = true)
-        //검색된 리스트 초기화
-        clearSearchedData()
         viewModelScope.launch {
+            showProgress(isShow = true)
             searchArtProductListUseCase(
                 startIndex = 0,
                 endIndex = 10,
@@ -58,7 +56,11 @@ class SearchViewModel @Inject constructor(
             }.onFailure {
                 showProgress(isShow = false)
                 when(it){
-                    is HayMoonException.UiHandlerException -> _clientHandleError.value = SingleEvent(it.code)
+                    is HayMoonException.UiHandlerException ->{
+                        if(it.code == ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN){//검색 결과가 없는 경우
+                            clearSearchedDataWhenNoSearchResult()
+                        }
+                    }
                     is HayMoonException.ToastException -> _errorToast.value = SingleEvent(it.message)
                     else -> println("error : ${it.message}")
                 }
@@ -66,12 +68,17 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    /**
+     * progress bar 보여주기 여부
+    **/
     private fun showProgress(isShow: Boolean){
         _progress.value = isShow
     }
 
-    //검색된 리스트 초기화
-    private fun clearSearchedData(){
+    /**
+     * 검색된 리스트 초기화
+    **/
+    private fun clearSearchedDataWhenNoSearchResult(){
         _searchArtProductList.value = emptyList()
     }
 }
