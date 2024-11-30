@@ -4,6 +4,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.happymoonday.presentation.R
 import com.happymoonday.presentation.base.BaseActivity
 import com.happymoonday.presentation.databinding.ActivitySearchBinding
@@ -12,6 +13,7 @@ import com.happymoonday.presentation.feature.search.viewmodel.SearchViewModel
 import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoRowUiModel
 import com.happymoonday.presentation.util.SingleEventObserver
 import com.happymoonday.presentation.util.hideSoftKeyboard
+import com.happymoonday.presentation.util.setOnPagingListener
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -37,7 +39,11 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
     private fun initSet() {
         searchItemRvAdapter = SearchItemRvAdapter()
         binding.rvSearchedArtProductList.apply {
+            val layoutManager = layoutManager as LinearLayoutManager
             adapter = searchItemRvAdapter
+            this.setOnPagingListener(layoutManager) {//다음 페이지 요청
+                searchViewModel.searchArtProductList(isNextPageRequest = true)
+            }
         }
     }
 

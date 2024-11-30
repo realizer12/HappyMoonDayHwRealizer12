@@ -1,7 +1,5 @@
 package com.happymoonday.domain.usecase
 
-import com.happymoonday.core.exception.ClientHandleCodeType
-import com.happymoonday.core.exception.HayMoonException
 import com.happymoonday.domain.repository.ProductRepository
 import javax.inject.Inject
 
@@ -45,12 +43,8 @@ class SearchArtProductListUseCase @Inject constructor(
         manageYear = manageYear,
         productNameKR = productNameKR,
     ).map { response ->
-        if (response.semaPsgudInfoList.isEmpty() && startIndex == 0) {//첫번째 페이지이고 검색 결과가 없을때 error 던짐
-            throw HayMoonException.UiHandlerException(code = ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN)
-        }
         response.apply {
-            searchDataNextStartIndex =
-                endIndex//다음 페이징 시작 index는 현재 요청 endIndex + SEARCH_DATA_RANGE로 return해준다.
+            searchDataNextStartIndex = endIndex//다음 페이징 시작 index는 현재 요청 endIndex + SEARCH_DATA_RANGE로 return해준다.
         }
     }
 

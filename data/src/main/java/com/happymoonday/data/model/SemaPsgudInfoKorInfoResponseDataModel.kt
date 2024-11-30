@@ -7,6 +7,9 @@ import com.happymoonday.domain.model.SemaPsgudInfoKorInfoRowEntity
 
 /**
  * data 레이어쪽 response data model
+ *
+ * @param semaPsgudInfoKorInfoResponse 미술품 정보 리스트
+ * @param RESULT 응답결과 - 검색어 등이 없을때, RESULT만 옴으로 추가.
  */
 data class SemaPsgudInfoKorInfoResponseDataModel(
     val semaPsgudInfoKorInfoResponse: SemaPsgudInfoKorInfoDataModel?,

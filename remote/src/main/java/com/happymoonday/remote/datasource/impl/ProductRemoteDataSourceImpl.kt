@@ -15,6 +15,7 @@ import javax.inject.Inject
  *
  *
  * 미술품 관련 remote 데이터소스 구현체
+ *
  * @author LeeDongHun
  *
  *
@@ -43,10 +44,16 @@ class ProductRemoteDataSourceImpl @Inject constructor(
                 result
             }
             SeoulArtApiResponseType.NO_DATA.code -> {//검색 결과가 없을때
-                throw HayMoonException.UiHandlerException(
-                    message = seoulApiResultCode.MESSAGE,
-                    code = ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN
-                )
+                if (startIndex == 0) {//첫번째 페이지에서 검색 결과 없는 경우 NO_SEARCHED_DATA_VIEW_SHOWN 보냄.
+                    throw HayMoonException.UiHandlerException(
+                        message = seoulApiResultCode.MESSAGE,
+                        code = ClientHandleCodeType.NO_SEARCHED_DATA_VIEW_SHOWN
+                    )
+                } else {//마지막 페이지인 경우 토스트 exception으로 처리
+                    throw HayMoonException.ToastException(
+                        message = "마지막 페이지 입니다."
+                    )
+                }
             }
             else -> {
                 throw HayMoonException.ToastException(
@@ -55,6 +62,9 @@ class ProductRemoteDataSourceImpl @Inject constructor(
             }
         }
     }.recoverCatching {
-        throw it
+        when (it) {
+            is HayMoonException -> throw it//mapCatching에서 발생한 exception은 그대로 throw
+            else -> throw HayMoonException.NonFatalException(it.message ?: "unknown error")//그외에는 nonFatalException으로 처리
+        }
     }
 }

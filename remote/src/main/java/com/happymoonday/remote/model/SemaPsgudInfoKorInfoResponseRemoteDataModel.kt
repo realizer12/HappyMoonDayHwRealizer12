@@ -13,6 +13,9 @@ import com.happymoonday.remote.util.SeoulArtApiResponseType
 /**
  * remote datasource 쪽 response data model
  *
+ * @param SemaPsgudInfoKorInfo 미술품 정보 리스트
+ * @param RESULT 응답결과 - 검색어 등이 없을때, RESULT만 옴으로 추가
+ *
  **/
 data class SemaPsgudInfoKorInfoResponseRemoteDataModel(
     val SemaPsgudInfoKorInfo: SemaPsgudInfoKorInfoRemoteDataModel?,

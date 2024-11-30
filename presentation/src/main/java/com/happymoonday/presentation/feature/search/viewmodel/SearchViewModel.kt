@@ -54,23 +54,31 @@ class SearchViewModel @Inject constructor(
         keyword: String = pastSearchKeyWord,
         isNextPageRequest: Boolean = false
     ) {
-        //다음 페이지 요청이 아니라면 검색 다시 하는 것이므로, startIndex 초기화 및 이전 검색어 초기화
+        //기존 리스틀 가져옴. null이면 emptyList()
+        var currentList = _searchArtProductList.value ?: emptyList()
+
+        //다음 페이지 요청이 아니라면 검색 다시 하는 것이므로,
+        //1. startIndex 초기화 및 이전 검색어 초기화
+        //2. currentList도 emptylist로 초기화
         if (!isNextPageRequest) {
             pastSearchKeyWord = keyword
             searchDataStartIndex = 0
+            currentList = emptyList()
         }
 
         viewModelScope.launch {
-            showProgress(isShow = true)
+            showProgress(isShow = isNextPageRequest.not())//다음 페이지 요청시에는 progress bar 보여주지 않음.
             searchArtProductListUseCase(
                 startIndex = searchDataStartIndex,
                 productNameKR = keyword
-            ).map {
+            ).mapCatching {
                 it.fromEntity()
             }.onSuccess {
                 showProgress(isShow = false)
                 searchDataStartIndex = it.searchDataNextStartIndex //다음 페이징 start index 넣어줌
-                _searchArtProductList.value = it.semaPsgudInfoList
+
+                //현재 리스트에서 새로운 list 추가 해서 뷰로 보냄.
+                _searchArtProductList.value = currentList + it.semaPsgudInfoList
             }.onFailure {
                 showProgress(isShow = false)
                 when (it) {
