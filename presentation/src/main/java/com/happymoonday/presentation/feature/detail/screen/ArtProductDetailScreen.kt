@@ -4,10 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
@@ -38,13 +38,15 @@ import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoRowUiModel
 **/
 @Composable
 fun ArtProductDetailRoute(
+    semaPsgudInfoKorInfoRowUiModel: SemaPsgudInfoKorInfoRowUiModel,
     onBackBtnClicked: () -> Unit,
-    semaPsgudInfoKorInfoRowUiModel: SemaPsgudInfoKorInfoRowUiModel
+    onBookMarkClicked:(clickedArtProductInfo:SemaPsgudInfoKorInfoRowUiModel)->Unit,
 ){
     ArtProductDetailScreen(
         toolbarString = semaPsgudInfoKorInfoRowUiModel.productName,
         productInfo = semaPsgudInfoKorInfoRowUiModel,
         onBackBtnClicked = onBackBtnClicked,
+        onBookMarkClicked = onBookMarkClicked
     )
 }
 
@@ -64,7 +66,8 @@ private fun ArtProductDetailScreen(
     modifier: Modifier = Modifier,
     toolbarString: String,
     productInfo: SemaPsgudInfoKorInfoRowUiModel,
-    onBackBtnClicked: () -> Unit = {}
+    onBackBtnClicked: () -> Unit = {},
+    onBookMarkClicked:(clickedArtProductInfo:SemaPsgudInfoKorInfoRowUiModel)->Unit = {}
 ){
     Scaffold(
         modifier = modifier
@@ -75,14 +78,15 @@ private fun ArtProductDetailScreen(
                 isBackBtnNeeded = true,
                 isBookMarBtnNeeded = true,
                 onBackBtnClicked = { onBackBtnClicked() },
+                onBookMarkBtnClicked = { onBookMarkClicked(productInfo) }
             )
         }
     ) { contentPadding->
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .background(Color.White)
                 .padding(contentPadding)
-                .wrapContentHeight()
                 .verticalScroll(rememberScrollState())
         ) {
             ArtProductImage(

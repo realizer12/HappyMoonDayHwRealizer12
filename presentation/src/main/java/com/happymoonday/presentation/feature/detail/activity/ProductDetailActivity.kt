@@ -3,9 +3,11 @@ package com.happymoonday.presentation.feature.detail.activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import com.happymoonday.design.compose.theme.HayMoonTheme
 import com.happymoonday.presentation.feature.detail.screen.ArtProductDetailRoute
-import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoRowUiModel
+import com.happymoonday.presentation.feature.detail.viewmodel.ProductDetailViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Create Date: 2024. 12. 1.
@@ -19,26 +21,27 @@ import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoRowUiModel
  *
  *
  **/
+@AndroidEntryPoint
 class ProductDetailActivity : ComponentActivity() {
+
+    // 상품 상세 화면 ViewModel
+    private val productDetailViewModel:ProductDetailViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             HayMoonTheme {
-                ArtProductDetailRoute(
-                    semaPsgudInfoKorInfoRowUiModel = SemaPsgudInfoKorInfoRowUiModel(
-                        productName = "상품 이름",
-                        productCategory = "상품 카테고리",
-                        productNameEn = "상품 영문 이름",
-                        productStandard = "상품 규격",
-                        dateOfCollection = "수집일자",
-                        materialTechInfo = "재료 및 기술 정보",
-                        dateOfMade = "제작년도",
-                        writerName = "작가 이름",
-                        mainImage = "메인 이미지",
-                        thumbNailImage = "썸네일 이미지"
-                    ),
-                    onBackBtnClicked = { finish() }
-                )
+                productDetailViewModel.getProductDetailInfo()?.let { productDetailInfo ->
+                    ArtProductDetailRoute(
+                        semaPsgudInfoKorInfoRowUiModel = productDetailInfo,
+                        onBackBtnClicked = {//뒤로가기 처리
+                            finish()
+                        },
+                        onBookMarkClicked = { clickedArtProductInfo ->
+                            // 북마크 클릭 시 이벤트
+                        }
+                    )
+                }
             }
         }
     }

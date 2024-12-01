@@ -1,5 +1,6 @@
 package com.happymoonday.presentation.feature.search.activity
 
+import android.content.Intent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
@@ -10,6 +11,7 @@ import com.happymoonday.core.exception.ClientHandleCodeType
 import com.happymoonday.presentation.R
 import com.happymoonday.presentation.base.BaseActivity
 import com.happymoonday.presentation.databinding.ActivitySearchBinding
+import com.happymoonday.presentation.feature.detail.activity.ProductDetailActivity
 import com.happymoonday.presentation.feature.search.adapter.SearchItemRvAdapter
 import com.happymoonday.presentation.feature.search.fragment.dialog.bottom.ArtCategoryFilterBottomDialogFragment
 import com.happymoonday.presentation.feature.search.fragment.dialog.bottom.ProductionYearFilterBottomDialogFragment
@@ -36,6 +38,10 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
 
     private lateinit var searchItemRvAdapter: SearchItemRvAdapter
     private val searchViewModel: SearchViewModel by viewModels()
+
+    companion object{
+        const val CLICKED_ART_PRODUCT_INFO = "CLICKED_ART_PRODUCT_INFO"
+    }
 
     override fun ActivitySearchBinding.onCreate() {
         initSet()
@@ -71,10 +77,12 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
             )
         }
 
-        //검색 결과 리스트 클릭
+        //검색 결과 리스트 클릭 -> 상세화면으로 이동
         searchItemRvAdapter.setItemClickListener(object : SearchItemRvAdapter.ItemClickListener {
             override fun onClickItem(item: SemaPsgudInfoKorInfoRowUiModel) {
-                showToast(item.productName)
+                startActivity(Intent(this@SearchActivity, ProductDetailActivity::class.java).apply {
+                    putExtra(CLICKED_ART_PRODUCT_INFO, item)
+                })
             }
         })
 

@@ -31,6 +31,9 @@
             android:name="com.happymoonday.presentation.feature.search.activity.SearchActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.happymoonday.presentation.feature.detail.activity.ProductDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
