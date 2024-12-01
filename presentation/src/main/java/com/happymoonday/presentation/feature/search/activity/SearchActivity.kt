@@ -3,6 +3,8 @@ package com.happymoonday.presentation.feature.search.activity
 import android.content.Intent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -39,6 +41,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
     private lateinit var searchItemRvAdapter: SearchItemRvAdapter
     private val searchViewModel: SearchViewModel by viewModels()
 
+    private lateinit var startActivityResultLauncher: ActivityResultLauncher<Intent>
     companion object{
         const val CLICKED_ART_PRODUCT_INFO = "CLICKED_ART_PRODUCT_INFO"
     }
@@ -61,6 +64,17 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
     }
 
     private fun setListenerEvent() {
+
+        //activity start result 받아옴.
+        startActivityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                //북마크 성공시 홈화면 이동위해 result 주고 finish 처리
+                if(result.resultCode == ProductDetailActivity.BOOK_MARK_FINISH_RESULT_CODE){
+                    setResult(ProductDetailActivity.BOOK_MARK_FINISH_RESULT_CODE)
+                    finish()
+                }
+            }
+
         //toolbar 뒤로가기 클릭
         binding.haymoonToolbar.setOnBackButtonClickListener {
             finish()
@@ -80,7 +94,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         //검색 결과 리스트 클릭 -> 상세화면으로 이동
         searchItemRvAdapter.setItemClickListener(object : SearchItemRvAdapter.ItemClickListener {
             override fun onClickItem(item: SemaPsgudInfoKorInfoRowUiModel) {
-                startActivity(Intent(this@SearchActivity, ProductDetailActivity::class.java).apply {
+                startActivityResultLauncher.launch(Intent(this@SearchActivity, ProductDetailActivity::class.java).apply {
                     putExtra(CLICKED_ART_PRODUCT_INFO, item)
                 })
             }

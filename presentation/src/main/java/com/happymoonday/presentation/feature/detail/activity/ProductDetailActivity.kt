@@ -1,6 +1,7 @@
 package com.happymoonday.presentation.feature.detail.activity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -27,6 +28,11 @@ class ProductDetailActivity : ComponentActivity() {
     // 상품 상세 화면 ViewModel
     private val productDetailViewModel:ProductDetailViewModel by viewModels()
 
+    companion object {
+        // 북마크 했을때 결과 코드
+        const val BOOK_MARK_FINISH_RESULT_CODE = 1002
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -38,7 +44,11 @@ class ProductDetailActivity : ComponentActivity() {
                             finish()
                         },
                         onBookMarkClicked = { clickedArtProductInfo ->
-                            // 북마크 클릭 시 이벤트
+                            // 북마크 실행시
+                            Toast.makeText(this, clickedArtProductInfo.productName, Toast.LENGTH_SHORT).show()
+                            setResult(BOOK_MARK_FINISH_RESULT_CODE)
+                            finish()
+
                         }
                     )
                 }

@@ -15,6 +15,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.happymoonday.design.compose.component.ArtProductImage
 import com.happymoonday.design.compose.component.HayMoonToolbar
+import com.happymoonday.design.compose.dialog.HayMoonDialog
 import com.happymoonday.design.compose.preview.HayMoonComponentPreview
 import com.happymoonday.design.compose.preview.HayMoonScreenPreview
 import com.happymoonday.design.compose.theme.HayMoonTheme
@@ -71,6 +74,9 @@ private fun ArtProductDetailScreen(
     onBackBtnClicked: () -> Unit = {},
     onBookMarkClicked:(clickedArtProductInfo:SemaPsgudInfoKorInfoRowUiModel)->Unit = {}
 ){
+    // Dialog 표시 상태 관리
+    val showDialog =  rememberSaveable {  mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier
             .background(Color.White),
@@ -80,10 +86,27 @@ private fun ArtProductDetailScreen(
                 isBackBtnNeeded = true,
                 isBookMarBtnNeeded = true,
                 onBackBtnClicked = { onBackBtnClicked() },
-                onBookMarkBtnClicked = { onBookMarkClicked(productInfo) }
+                onBookMarkBtnClicked = {  showDialog.value = true }
             )
         }
     ) { contentPadding->
+        if(showDialog.value){//dialog 보여줘야 할떄
+            HayMoonDialog(
+                message = "즐겨찾기에 추가할까요?",
+                confirmButtonText = "확인",
+                dismissButtonText = "취소",
+                onConfirmClicked = {
+                    onBookMarkClicked(productInfo)
+                    showDialog.value = false
+                },
+                onDismissClicked = {
+                    showDialog.value = false
+                },
+                onDismissRequest = {
+                    showDialog.value = false
+                }
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()

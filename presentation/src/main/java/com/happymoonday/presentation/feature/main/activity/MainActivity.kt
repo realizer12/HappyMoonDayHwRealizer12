@@ -34,6 +34,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     private fun setListenerEvent(){
 
     }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (navController.currentDestination?.id != R.id.main_seoul_art_home) {
+            navController.navigate(R.id.main_seoul_art_home)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     private fun getDataFromVm(){
 
     }
