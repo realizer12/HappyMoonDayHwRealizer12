@@ -83,6 +83,7 @@ data class SemaPsgudInfoKorInfoRowDataModel(
                 materialTechInfo = matrl_technic,
                 mainImage = main_image,
                 thumbNailImage = thumb_image,
+                productNameEn = prdct_nm_eng?:"no name",
             )
         }
     }

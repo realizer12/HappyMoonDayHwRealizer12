@@ -32,6 +32,7 @@ data class SemaPsgudInfoKorInfoUiModel(
  * @param dateOfMade 제작년도
  * @param dateOfCollection 수집년도
  * @param productName 작품명
+ * @param productNameEn 작품명 (영문)
  * @param writerName 작가명
  * @param productStandard 작품 구격
  * @param materialTechInfo 재료/기법
@@ -44,6 +45,7 @@ data class SemaPsgudInfoKorInfoRowUiModel(
     val dateOfMade: String,
     val dateOfCollection: String,
     val productName: String,
+    val productNameEn: String,
     val writerName: String,
     val productStandard: String,
     val materialTechInfo: String,
@@ -63,6 +65,7 @@ data class SemaPsgudInfoKorInfoRowUiModel(
                 materialTechInfo = materialTechInfo,
                 mainImage = mainImage,
                 thumbNailImage = thumbNailImage,
+                productNameEn = productNameEn
             )
         }
     }

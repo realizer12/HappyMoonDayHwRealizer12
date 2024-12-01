@@ -25,6 +25,7 @@ data class SemaPsgudInfoKorInfoRowEntity(
     val dateOfMade: String,
     val dateOfCollection: String,
     val productName: String,
+    val productNameEn: String,
     val writerName: String,
     val productStandard: String,
     val materialTechInfo: String,
