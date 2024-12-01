@@ -57,6 +57,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         binding.rvSearchedArtProductList.apply {
             val layoutManager = layoutManager as LinearLayoutManager
             adapter = searchItemRvAdapter
+            itemAnimator = null
             this.setOnPagingListener(layoutManager) {//다음 페이지 요청
                 searchViewModel.searchArtProductList(isNextPageRequest = true)
             }
