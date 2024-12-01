@@ -4,17 +4,22 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.happymoonday.presentation.R
 import com.happymoonday.presentation.base.BaseActivity
 import com.happymoonday.presentation.databinding.ActivitySearchBinding
 import com.happymoonday.presentation.feature.search.adapter.SearchItemRvAdapter
+import com.happymoonday.presentation.feature.search.fragment.dialog.bottom.ProductionYearFilterBottomDialogFragment
 import com.happymoonday.presentation.feature.search.viewmodel.SearchViewModel
 import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoRowUiModel
 import com.happymoonday.presentation.util.SingleEventObserver
 import com.happymoonday.presentation.util.hideSoftKeyboard
 import com.happymoonday.presentation.util.setOnPagingListener
+import com.happymoonday.presentation.util.setOnSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * Create Date: 2024. 11. 24.
@@ -82,6 +87,25 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
                 else -> false
             }
         }
+
+        //카테고리 필터 클릭
+        binding.cpProductionYearFilter.setOnSingleClickListener {
+            ProductionYearFilterBottomDialogFragment.getInstance(
+                productionYearFilterList = searchViewModel.getProductYearFilterList(),
+                productionYearFilterClicked = {
+                   searchViewModel.setSelectedProductionFilterType(selectedProductionYearFilter = it)
+                   searchListScrollToTop()
+                }
+            ).show(supportFragmentManager, "ProductionYearFilterBottomDialogFragment")
+        }
+    }
+
+    //검색 리스트 스크롤 최상단으로 이동 -> 필터 변경등에 처리 후 진행
+    private fun searchListScrollToTop(){
+        lifecycleScope.launch {
+            delay(100L)
+            binding.rvSearchedArtProductList.scrollToPosition(0)
+        }
     }
 
     private fun getDataFromVm() {
@@ -89,6 +113,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         searchViewModel.searchArtProductList.observe(this) {
             it.takeIf { it.isNotEmpty() }?.let { items ->
                 binding.clNoSearchResult.isVisible = false
+                binding.cpgFilter.isVisible = true
                 searchItemRvAdapter.submitList(items)
             } ?: run {//검색결과 없는 경우 검색결과 없음 보여주고 리스트 초기화
                 showNoSearchResultView()
@@ -106,10 +131,12 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
             binding.pgSearchArt.isVisible = it
         }
 
+        //제작년도 필터 뷰에 보이는 문구 처리
         searchViewModel.productYearFilterString.observe(this) {
             binding.cpProductionYearFilter.text = it
         }
 
+        //미술품 카테고리 필터 뷰에 보이는 문구 처리
         searchViewModel.artCategoryFilterString.observe(this) {
             binding.cpCategoryFilter.text = it
         }
@@ -127,6 +154,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
 
     //검색 결과 없음 뷰 보여줌
     private fun showNoSearchResultView() {
+        binding.cpgFilter.visibility = View.GONE
         binding.clNoSearchResult.visibility = View.VISIBLE
         binding.tvNoSearchResult.text = String.format(
             getString(R.string.no_search_result),

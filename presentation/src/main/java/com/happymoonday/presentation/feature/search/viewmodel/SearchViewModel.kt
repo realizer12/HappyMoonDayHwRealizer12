@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.happymoonday.core.exception.ClientHandleCodeType
 import com.happymoonday.core.exception.HayMoonException
 import com.happymoonday.domain.model.SearchFilterEntity
+import com.happymoonday.domain.model.SearchFilterType
 import com.happymoonday.domain.usecase.GetArtCategoryFilterUseCase
 import com.happymoonday.domain.usecase.GetProductionYearFilterUseCase
 import com.happymoonday.domain.usecase.SearchArtProductListUseCase
@@ -73,6 +74,45 @@ class SearchViewModel @Inject constructor(
         _artCategoryFilterString.value = artCategoryFilterList.returnArtCategoryFilerString()
     }
 
+    /**
+     * 재작년도 필터를 구성하는 데이터 리스트 return
+    **/
+    fun getProductYearFilterList():  List<SearchFilterEntity.ProductionYearFilter> {
+        return productionYearFilterList
+    }
+
+    /**
+     * 재작년도 선택시 수정사항들 처리
+    **/
+    fun setSelectedProductionFilterType(selectedProductionYearFilter: SearchFilterEntity.ProductionYearFilter) {
+
+        //이미 선택된 값이면 early return - 로직 안돌게 하기
+        if(productionYearFilterList.find { it.isSelected } == selectedProductionYearFilter) return
+
+        //기존 selected값 변경
+        productionYearFilterList.forEach {
+            it.isSelected = it == selectedProductionYearFilter
+        }
+
+        //제작년도 필터 뷰에 보이는 문구 변경
+        _productYearFilterString.value = selectedProductionYearFilter.displayName
+
+        //현재 list기준으로 filter값 적용
+        val currentList = _searchArtProductList.value ?: emptyList()
+        _searchArtProductList.value =  currentList.ifEmpty { return }.sortArtListWithProductionFilter()
+    }
+
+    //가장 최신 재작년도 필터 기준으로 sort 처리 진행
+    private fun List<SemaPsgudInfoKorInfoRowUiModel>.sortArtListWithProductionFilter():List<SemaPsgudInfoKorInfoRowUiModel>{
+        return this.let {
+            val productionYearFilterType = productionYearFilterList.find { it.isSelected }?.filterType
+            when(productionYearFilterType){
+                SearchFilterType.ProductionYear.Ascending -> it.sortedBy { it.dateOfMade }
+                else-> it.sortedByDescending { it.dateOfMade }
+            }
+        }
+    }
+
     //ArtCategoryFilter에 한하여, 전체 선택인 경우 전체를 return
     //그외에는 선택된 것만 return
     private fun List<SearchFilterEntity.ArtCategoryFilter>.returnArtCategoryFilerString(): String {
@@ -115,7 +155,8 @@ class SearchViewModel @Inject constructor(
                 searchDataStartIndex = it.searchDataNextStartIndex //다음 페이징 start index 넣어줌
 
                 //현재 리스트에서 새로운 list 추가 해서 뷰로 보냄.
-                _searchArtProductList.value = currentList + it.semaPsgudInfoList
+                //새로운 리스트 기준 필터처리 계속 적용
+                _searchArtProductList.value = (currentList + it.semaPsgudInfoList).sortArtListWithProductionFilter()
             }.onFailure {
                 showProgress(isShow = false)
                 when (it) {
