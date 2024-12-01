@@ -105,6 +105,14 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         searchViewModel.progress.observe(this) {
             binding.pgSearchArt.isVisible = it
         }
+
+        searchViewModel.productYearFilterString.observe(this) {
+            binding.cpProductionYearFilter.text = it
+        }
+
+        searchViewModel.artCategoryFilterString.observe(this) {
+            binding.cpCategoryFilter.text = it
+        }
     }
 
     //검색어 입력 안했을 여부 체크 -> 입력 안 했으면 null 반환

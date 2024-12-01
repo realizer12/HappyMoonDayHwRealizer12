@@ -1,6 +1,7 @@
 package com.happymoonday.presentation.util
 
 import android.content.Context
+import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -45,3 +46,9 @@ fun RecyclerView.setOnPagingListener(
         }
     })
 }
+
+
+fun Context.toPx(dp: Int): Float = TypedValue.applyDimension(
+    TypedValue.COMPLEX_UNIT_DIP,
+    dp.toFloat(),
+    resources.displayMetrics)

@@ -62,7 +62,7 @@ data class SemaPsgudInfoKorInfoRowUiModel(
                 productStandard = productStandard,
                 materialTechInfo = materialTechInfo,
                 mainImage = mainImage,
-                thumbNailImage = thumbNailImage
+                thumbNailImage = thumbNailImage,
             )
         }
     }

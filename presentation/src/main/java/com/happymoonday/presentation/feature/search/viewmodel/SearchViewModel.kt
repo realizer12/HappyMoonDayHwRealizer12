@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.happymoonday.core.exception.ClientHandleCodeType
 import com.happymoonday.core.exception.HayMoonException
+import com.happymoonday.domain.model.SearchFilterEntity
+import com.happymoonday.domain.usecase.GetArtCategoryFilterUseCase
+import com.happymoonday.domain.usecase.GetProductionYearFilterUseCase
 import com.happymoonday.domain.usecase.SearchArtProductListUseCase
 import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoRowUiModel
 import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoUiModel.Companion.fromEntity
@@ -23,7 +26,9 @@ import javax.inject.Inject
 **/
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchArtProductListUseCase: SearchArtProductListUseCase
+    private val searchArtProductListUseCase: SearchArtProductListUseCase,
+    private val getArtCategoryFilterUseCase: GetArtCategoryFilterUseCase,
+    private val getProductionYearFilterUseCase: GetProductionYearFilterUseCase,
 ) : ViewModel() {
 
     //검색된 미술품 리스트 LiveData
@@ -43,6 +48,35 @@ class SearchViewModel @Inject constructor(
 
     //이전 검색어 - 페이징시 계속 사용
     private var pastSearchKeyWord:String = ""
+
+    private val productionYearFilterList = getProductionYearFilterUseCase()
+    private val artCategoryFilterList = getArtCategoryFilterUseCase()
+
+    //제작년도 필터 뷰에 보이는 문구 처리 LiveData
+    private val _productYearFilterString = MutableLiveData<String>()
+    val productYearFilterString: LiveData<String> = _productYearFilterString
+
+    //카테고리 필터 뷰에 보이는 문구 처리 LiveData
+    private val _artCategoryFilterString = MutableLiveData<String>()
+    val artCategoryFilterString: LiveData<String> = _artCategoryFilterString
+
+    init {
+        initSetFilterData()
+    }
+
+    //필터 data 초기세팅
+    private fun initSetFilterData() {
+        _productYearFilterString.value = productionYearFilterList.find { it.isSelected }?.displayName?:"error"
+        _artCategoryFilterString.value = artCategoryFilterList.returnArtCategoryFilerString()
+    }
+
+    //ArtCategoryFilter에 한하여, 전체 선택인 경우 전체를 return
+    //그외에는 선택된 것만 return
+    private fun List<SearchFilterEntity.ArtCategoryFilter>.returnArtCategoryFilerString(): String {
+        return if (all { it.isSelected }) "전체"
+        else filter { it.isSelected }
+            .joinToString(", ") { it.displayName}
+    }
 
     /**
      * 미술품 검색 리스트 조회
@@ -103,4 +137,5 @@ class SearchViewModel @Inject constructor(
     private fun clearSearchedDataWhenNoSearchResult(){
         _searchArtProductList.value = emptyList()
     }
+
 }

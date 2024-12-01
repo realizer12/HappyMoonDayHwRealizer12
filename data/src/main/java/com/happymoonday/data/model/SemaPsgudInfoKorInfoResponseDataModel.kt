@@ -82,7 +82,7 @@ data class SemaPsgudInfoKorInfoRowDataModel(
                 dateOfMade = mnfct_year,
                 materialTechInfo = matrl_technic,
                 mainImage = main_image,
-                thumbNailImage = thumb_image
+                thumbNailImage = thumb_image,
             )
         }
     }
