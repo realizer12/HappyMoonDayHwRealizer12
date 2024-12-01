@@ -152,6 +152,17 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
 
         //미술품 카테고리 필터 뷰에 보이는 문구 처리
         searchViewModel.artCategoryFilterString.observe(this) {
+            binding.cpCategoryFilter.apply {
+                if(it != "부문"){
+                    chipBackgroundColor = resources.getColorStateList(R.color.gray, null)
+                    closeIconTint = resources.getColorStateList(R.color.white, null)
+                    setTextColor(resources.getColor(R.color.white, null))
+                }else{
+                    chipBackgroundColor = resources.getColorStateList(R.color.white, null)
+                    closeIconTint = resources.getColorStateList(R.color.gray, null)
+                    setTextColor(resources.getColor(R.color.gray, null))
+                }
+            }
             binding.cpCategoryFilter.text = it
         }
 

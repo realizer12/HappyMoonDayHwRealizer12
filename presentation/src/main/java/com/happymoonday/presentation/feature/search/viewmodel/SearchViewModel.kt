@@ -198,7 +198,7 @@ class SearchViewModel @Inject constructor(
             // 전체 선택된 경우
             all { it.isSelected } -> "전체"
             // 선택된 항목이 없는 경우
-            none { it.isSelected } -> ""
+            none { it.isSelected } -> "부문"
             // 선택된 항목이 2개 이상인 경우 "외 몇개" 로 보여줌
             else -> {
                 val selectedItems = filter { it.isSelected }
