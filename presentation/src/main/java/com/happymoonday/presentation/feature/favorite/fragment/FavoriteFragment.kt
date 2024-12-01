@@ -40,6 +40,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
     private fun initSet() {
         favoriteAdapter = SearchItemRvAdapter()
         binding.rvFavorite.apply {
+            itemAnimator = null
             adapter = favoriteAdapter
         }
     }
