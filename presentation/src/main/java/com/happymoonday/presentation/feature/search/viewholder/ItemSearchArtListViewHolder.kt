@@ -28,8 +28,8 @@ class ItemSearchArtListViewHolder(
 
         Glide.with(itemView.context)
             .load(item.thumbNailImage)
-            .placeholder(R.drawable.icon_favorite)
-            .error(R.drawable.icon_favorite)
+            .placeholder(R.drawable.icon_home)
+            .error(R.drawable.icon_home)
             .into(binding.ivArtThumbnail)
 
     }

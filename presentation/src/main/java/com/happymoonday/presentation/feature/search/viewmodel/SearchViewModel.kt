@@ -49,7 +49,10 @@ class SearchViewModel @Inject constructor(
     //이전 검색어 - 페이징시 계속 사용
     private var pastSearchKeyWord:String = ""
 
+    //제작년도 필터 데이터 리스트
     private val productionYearFilterList = getProductionYearFilterUseCase()
+
+    //미술품 카테고리 필터 데이터 리스트
     private val artCategoryFilterList = getArtCategoryFilterUseCase()
 
     //제작년도 필터 뷰에 보이는 문구 처리 LiveData
