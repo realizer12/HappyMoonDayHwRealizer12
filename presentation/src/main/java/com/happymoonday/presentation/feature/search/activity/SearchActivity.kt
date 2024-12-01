@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.happymoonday.core.exception.ClientHandleCodeType
 import com.happymoonday.presentation.R
 import com.happymoonday.presentation.base.BaseActivity
 import com.happymoonday.presentation.databinding.ActivitySearchBinding
@@ -123,6 +124,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
     private fun getDataFromVm() {
         //검색된 미술품 리스트 뿌려줌
         searchViewModel.searchArtProductList.observe(this) {
+            binding.clNoCategoryFilteredResult.isVisible = false
             it.takeIf { it.isNotEmpty() }?.let { items ->
                 binding.clNoSearchResult.isVisible = false
                 binding.cpgFilter.isVisible = true
@@ -152,6 +154,13 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
         searchViewModel.artCategoryFilterString.observe(this) {
             binding.cpCategoryFilter.text = it
         }
+
+        //ui handle 에러 처리
+        searchViewModel.uiHandlerException.observe(this, SingleEventObserver {
+            if(it.code == ClientHandleCodeType.NO_CATEGORY_DATA_VIEW_SHOWN){//카테고리에 매칭되는 데이터가 없는 경우
+                showNoCategoryMatchedDataView()
+            }
+        })
     }
 
     //검색어 입력 안했을 여부 체크 -> 입력 안 했으면 null 반환
@@ -172,5 +181,11 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
             getString(R.string.no_search_result),
             "'" + binding.editSearchArt.text.toString() + "'"
         )
+    }
+
+    //카테고리 필터했을때 매칭되는 데이터가 없는 경우 보여줌.
+    private fun showNoCategoryMatchedDataView(){
+        binding.cpgFilter.visibility = View.VISIBLE
+        binding.clNoCategoryFilteredResult.visibility = View.VISIBLE
     }
 }

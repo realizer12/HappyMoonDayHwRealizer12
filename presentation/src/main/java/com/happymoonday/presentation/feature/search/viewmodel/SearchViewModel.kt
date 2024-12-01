@@ -48,6 +48,10 @@ class SearchViewModel @Inject constructor(
     private val _errorToast = MutableLiveData<SingleEvent<String>>()
     val errorToast: LiveData<SingleEvent<String>> = _errorToast
 
+    //uiHandlerException 이벤트 LiveData
+    private val _uiHandlerException = MutableLiveData<SingleEvent<HayMoonException.UiHandlerException>>()
+    val uiHandlerException: LiveData<SingleEvent<HayMoonException.UiHandlerException>> = _uiHandlerException
+
     //검색 데이터 시작 인덱스
     private var searchDataStartIndex = 0
 
@@ -115,9 +119,23 @@ class SearchViewModel @Inject constructor(
 
         //currentList가 없으면 return
         //그외에는 필터링 진행 하여, 뷰 업데이트
-        _searchArtProductList.value =  currentList.ifEmpty { return }
+        val categoryFilteredArtProductList =  currentList.ifEmpty { return }
             .sortArtListWithCategoryFilter()
             .sortArtListWithProductionFilter()
+
+        //카테고리로 필터링된 뷰가 없으므로, NO_CATEGORY_DATA_VIEW_SHOWN throw
+        if(categoryFilteredArtProductList.isEmpty()){
+            _uiHandlerException.value = SingleEvent(
+                HayMoonException.UiHandlerException(
+                    message = "카테고리에 해당하는 데이터가 없습니다.",
+                    code = ClientHandleCodeType.NO_CATEGORY_DATA_VIEW_SHOWN
+                )
+            )
+        }else{
+            //카테고리 업데이트는 기존 원본에는 있지만 뷰에는 업데이트 안된
+            //데이터가 있을수 있으므로 원본 기준으로 다시 진행
+            _searchArtProductList.value = categoryFilteredArtProductList
+        }
     }
 
     /**
@@ -134,12 +152,24 @@ class SearchViewModel @Inject constructor(
         //미술품 카테고리 필터 뷰에 보이는 문구 변경
         _artCategoryFilterString.value = artCategoryFilterList.returnArtCategoryFilterString()
 
-        //카테고리 업데이트는 기존 원본에는 있지만 뷰에는 업데이트 안된
-        //데이터가 있을수 있으므로 원본 기준으로 다시 진행
-        _searchArtProductList.value =
-            originalCachedSearchArtProductList.ifEmpty { return }
-                .sortArtListWithCategoryFilter()
-                .sortArtListWithProductionFilter()
+        //카테고리 필터링된 검색된 미술품 리스트
+        val categoryFilteredArtProductList =  originalCachedSearchArtProductList.ifEmpty { return }
+            .sortArtListWithCategoryFilter()
+            .sortArtListWithProductionFilter()
+
+        //카테고리로 필터링된 뷰가 없으므로, NO_CATEGORY_DATA_VIEW_SHOWN throw
+        if(categoryFilteredArtProductList.isEmpty()){
+            _uiHandlerException.value = SingleEvent(
+                HayMoonException.UiHandlerException(
+                    message = "카테고리에 해당하는 데이터가 없습니다.",
+                    code = ClientHandleCodeType.NO_CATEGORY_DATA_VIEW_SHOWN
+                )
+            )
+        }else{
+            //카테고리 업데이트는 기존 원본에는 있지만 뷰에는 업데이트 안된
+            //데이터가 있을수 있으므로 원본 기준으로 다시 진행
+            _searchArtProductList.value = categoryFilteredArtProductList
+        }
     }
 
     //가장 최신 카테고리 필터 기준으로 미술품 리스트 filter 처리하여 return

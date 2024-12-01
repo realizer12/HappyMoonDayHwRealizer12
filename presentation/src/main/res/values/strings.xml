@@ -8,6 +8,8 @@
     <string name="search">검색하기</string>
     <string name="no_search_result">%s에 대한 검색 결과가 없어요</string>
     <string name="search_another_way">다른 검색어를 입력하거나\n설치화 띄어쓰기를 확인해보세요.</string>
+    <string name="no_category_result">현재 지정한 카테고리에 맞는 결과가 없어요.</string>
+    <string name="no_category_result_another_way">미술품 카테고리를 변경해보세요.</string>
     <string name="confirm">확인</string>
 
 </resources>

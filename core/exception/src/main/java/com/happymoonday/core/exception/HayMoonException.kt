@@ -47,5 +47,10 @@ enum class ClientHandleCodeType(val code: Int) {
     /**
      * 검색 결과가 없음 뷰를 보여 줘야 할때
     **/
-    NO_SEARCHED_DATA_VIEW_SHOWN(100)
+    NO_SEARCHED_DATA_VIEW_SHOWN(100),
+
+    /**
+     * 카테고리 필터링시 없는 경우 카테고리 바꾸라는 뷰 보여줘야할때
+    **/
+    NO_CATEGORY_DATA_VIEW_SHOWN(101)
 }
