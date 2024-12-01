@@ -194,9 +194,22 @@ class SearchViewModel @Inject constructor(
     //ArtCategoryFilter에 한하여, 전체 선택인 경우 전체를 return
     //그외에는 선택된 것만 return
     private fun List<SearchFilterEntity.ArtCategoryFilter>.returnArtCategoryFilterString(): String {
-        return if (all { it.isSelected }) "전체"
-        else filter { it.isSelected }
-            .joinToString(", ") { it.displayName}
+        return when {
+            // 전체 선택된 경우
+            all { it.isSelected } -> "전체"
+            // 선택된 항목이 없는 경우
+            none { it.isSelected } -> ""
+            // 선택된 항목이 2개 이상인 경우 "외 몇개" 로 보여줌
+            else -> {
+                val selectedItems = filter { it.isSelected }
+                buildString {
+                    append(selectedItems.first().displayName)
+                    if (selectedItems.size > 1) {
+                        append(" 외 ${selectedItems.size - 1}")
+                    }
+                }
+            }
+        }
     }
 
     /**
