@@ -11,5 +11,6 @@
     <string name="no_category_result">현재 지정한 카테고리에 맞는 결과가 없어요.</string>
     <string name="no_category_result_another_way">미술품 카테고리를 변경해보세요.</string>
     <string name="confirm">확인</string>
+    <string name="my_favorite">소장품</string>
 
 </resources>

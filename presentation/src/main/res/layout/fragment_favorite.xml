@@ -23,5 +23,30 @@
             haymoon:toolbarBackBtnVisibility="false"
             haymoon:toolbarText="@string/favorite"
             haymoon:toolbarTextVisibility="true" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_favorite_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/my_favorite"
+            android:paddingStart="10dp"
+            android:textSize="17dp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/haymoon_toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_favorite"
+            android:layout_width="0dp"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_favorite_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_height="0dp"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
