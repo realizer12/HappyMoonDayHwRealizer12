@@ -37,7 +37,7 @@ class FavoriteViewModel @Inject constructor(
     fun getBookMarkList() = viewModelScope.launch {
         getBookMarkListUseCase()
             .onSuccess {
-                _bookMarkList.value = it.map { it.fromEntity() }
+                _bookMarkList.value = it.map { it.fromEntity() }.sortedByDescending { it.id }
             }
     }
 
