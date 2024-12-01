@@ -2,10 +2,12 @@ package com.happymoonday.presentation.feature.detail.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -101,15 +103,24 @@ private fun ArtProductDetailScreen(
                 fontSize = 20.sp,
                 maxLines = 1,
             )
-            Text(
-                modifier = Modifier
-                    .padding(top = 3.dp, start = 20.dp),
-                text = productInfo.productNameEn,
-                fontWeight = FontWeight(900),
-                color = Color.Black,
-                fontSize = 13.sp,
-                maxLines = 1,
-            )
+            if(productInfo.productName != productInfo.productNameEn){
+                Text(
+                    modifier = Modifier
+                        .padding(top = 3.dp, start = 20.dp),
+                    text = productInfo.productNameEn,
+                    fontWeight = FontWeight(900),
+                    color = Color.Black,
+                    fontSize = 13.sp,
+                    maxLines = 1,
+                )
+            }else{
+                // Text가 없을 때도 동일한 공간 유지
+                Box(
+                    modifier = Modifier
+                        .padding(top = 3.dp, start = 20.dp)
+                        .height(13.dp) // Text의 fontSize만큼의 높이
+                )
+            }
             productInfo.run {
                 ArtProductDetailInfo(
                     title = "작가명",
