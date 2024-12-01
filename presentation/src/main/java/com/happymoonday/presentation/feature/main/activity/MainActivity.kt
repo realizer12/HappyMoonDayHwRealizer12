@@ -1,6 +1,8 @@
 package com.happymoonday.presentation.feature.main.activity
 
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -32,16 +34,25 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         setBottomNavigation()
     }
     private fun setListenerEvent(){
-
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (navController.currentDestination?.id != R.id.main_seoul_art_home) {
-            navController.navigate(R.id.main_seoul_art_home)
-        } else {
-            super.onBackPressed()
-        }
+        // 뒤로가기 콜백 등록
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                when (navController.currentDestination?.id) {
+                    R.id.main_seoul_art_home -> {
+                        // 홈 화면에서는 앱 종료
+                        finish()
+                    }
+                    else -> {
+                        // 다른 탭에서는 홈으로 이동
+                        navController.navigate(R.id.main_seoul_art_home, null, NavOptions.Builder()
+                            .setPopUpTo(R.id.main_seoul_art_home, false)
+                            .setLaunchSingleTop(true)
+                            .build()
+                        )
+                    }
+                }
+            }
+        })
     }
 
     private fun getDataFromVm(){
