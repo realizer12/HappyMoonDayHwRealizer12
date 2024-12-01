@@ -1,6 +1,7 @@
 package com.happymoonday.presentation.feature.main.activity
 
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -9,6 +10,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.happymoonday.presentation.R
 import com.happymoonday.presentation.base.BaseActivity
 import com.happymoonday.presentation.databinding.ActivityMainBinding
+import com.happymoonday.presentation.feature.main.viewmodel.MainViewModel
+import com.happymoonday.presentation.util.SingleEventObserver
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -21,6 +24,8 @@ import dagger.hilt.android.AndroidEntryPoint
  **/
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
+
+    private val mainViewModel:MainViewModel by viewModels()
 
     //네비게이션 컨트롤러
     private lateinit var navController: NavController
@@ -56,8 +61,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     private fun getDataFromVm(){
-
+        //즐겨찾기 탭으로 이동
+        mainViewModel.moveToFavoriteFragment.observe(this,SingleEventObserver{
+            binding.bnMenu.selectedItemId = R.id.main_seoul_art_favorite
+        })
     }
+
     //바텀 메뉴 세팅
     private fun setBottomNavigation(){
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
