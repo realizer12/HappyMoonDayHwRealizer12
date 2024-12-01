@@ -71,7 +71,7 @@ class SearchViewModel @Inject constructor(
     //필터 data 초기세팅
     private fun initSetFilterData() {
         _productYearFilterString.value = productionYearFilterList.find { it.isSelected }?.displayName?:"error"
-        _artCategoryFilterString.value = artCategoryFilterList.returnArtCategoryFilerString()
+        _artCategoryFilterString.value = artCategoryFilterList.returnArtCategoryFilterString()
     }
 
     /**
@@ -79,6 +79,13 @@ class SearchViewModel @Inject constructor(
     **/
     fun getProductYearFilterList():  List<SearchFilterEntity.ProductionYearFilter> {
         return productionYearFilterList
+    }
+
+    /**
+     * 미술품 카테고리 필터를 구성하는 데이터 리스트 return
+    **/
+    fun getArtCategoryFilterList(): List<SearchFilterEntity.ArtCategoryFilter> {
+        return artCategoryFilterList
     }
 
     /**
@@ -115,7 +122,7 @@ class SearchViewModel @Inject constructor(
 
     //ArtCategoryFilter에 한하여, 전체 선택인 경우 전체를 return
     //그외에는 선택된 것만 return
-    private fun List<SearchFilterEntity.ArtCategoryFilter>.returnArtCategoryFilerString(): String {
+    private fun List<SearchFilterEntity.ArtCategoryFilter>.returnArtCategoryFilterString(): String {
         return if (all { it.isSelected }) "전체"
         else filter { it.isSelected }
             .joinToString(", ") { it.displayName}

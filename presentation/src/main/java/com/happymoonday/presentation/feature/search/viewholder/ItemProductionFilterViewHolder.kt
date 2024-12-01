@@ -18,8 +18,8 @@ class ItemProductionFilterViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: SearchFilterEntity.ProductionYearFilter) {
-        binding.tvFilterTitle.text = item.displayName
         binding.tvFilterTitle.apply {
+            text = item.displayName//text 적용
             val textColor = itemView.resources.getColor(
                 if (item.isSelected) {
                     R.color.black

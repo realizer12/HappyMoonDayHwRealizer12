@@ -27,6 +27,7 @@ abstract class BaseBottomSheetDialogFragment <VDB : ViewDataBinding>(@LayoutRes 
     ): View {
         this.dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         binding = DataBindingUtil.inflate(inflater, layoutRes, container, false)
+        isCancelable = false
         binding.onCreateView()
         return binding.root
     }

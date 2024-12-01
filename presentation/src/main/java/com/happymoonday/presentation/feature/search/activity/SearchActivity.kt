@@ -1,5 +1,6 @@
 package com.happymoonday.presentation.feature.search.activity
 
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
@@ -10,6 +11,7 @@ import com.happymoonday.presentation.R
 import com.happymoonday.presentation.base.BaseActivity
 import com.happymoonday.presentation.databinding.ActivitySearchBinding
 import com.happymoonday.presentation.feature.search.adapter.SearchItemRvAdapter
+import com.happymoonday.presentation.feature.search.fragment.dialog.bottom.ArtCategoryFilterBottomDialogFragment
 import com.happymoonday.presentation.feature.search.fragment.dialog.bottom.ProductionYearFilterBottomDialogFragment
 import com.happymoonday.presentation.feature.search.viewmodel.SearchViewModel
 import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoRowUiModel
@@ -88,7 +90,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
             }
         }
 
-        //카테고리 필터 클릭
+        //재작년도 필터 클릭
         binding.cpProductionYearFilter.setOnSingleClickListener {
             ProductionYearFilterBottomDialogFragment.getInstance(
                 productionYearFilterList = searchViewModel.getProductYearFilterList(),
@@ -97,6 +99,18 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
                    searchListScrollToTop()
                 }
             ).show(supportFragmentManager, "ProductionYearFilterBottomDialogFragment")
+        }
+
+        //미술품 카테고리 필터 클릭
+        binding.cpCategoryFilter.setOnSingleClickListener{
+            ArtCategoryFilterBottomDialogFragment.getInstance(
+                artCategoryFilterList = searchViewModel.getArtCategoryFilterList(),
+                artCategoryFilterClicked = {
+
+                    Log.v("asdasdasd ", it.toString())
+                    searchListScrollToTop()
+                }
+            ).show(supportFragmentManager, "ArtCategoryFilterBottomDialogFragment")
         }
     }
 
