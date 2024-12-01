@@ -46,12 +46,14 @@ fun ArtProductDetailRoute(
     semaPsgudInfoKorInfoRowUiModel: SemaPsgudInfoKorInfoRowUiModel,
     onBackBtnClicked: () -> Unit,
     onBookMarkClicked:(clickedArtProductInfo:SemaPsgudInfoKorInfoRowUiModel)->Unit,
+    onBookMarkDeleteClicked:(clickedArtProductInfo:SemaPsgudInfoKorInfoRowUiModel)->Unit,
 ){
     ArtProductDetailScreen(
         toolbarString = semaPsgudInfoKorInfoRowUiModel.productName,
         productInfo = semaPsgudInfoKorInfoRowUiModel,
         onBackBtnClicked = onBackBtnClicked,
-        onBookMarkClicked = onBookMarkClicked
+        onBookMarkClicked = onBookMarkClicked,
+        onBookMarkDeleteClicked = onBookMarkDeleteClicked
     )
 }
 
@@ -72,10 +74,12 @@ private fun ArtProductDetailScreen(
     toolbarString: String,
     productInfo: SemaPsgudInfoKorInfoRowUiModel,
     onBackBtnClicked: () -> Unit = {},
+    onBookMarkDeleteClicked:(clickedArtProductInfo:SemaPsgudInfoKorInfoRowUiModel)->Unit,
     onBookMarkClicked:(clickedArtProductInfo:SemaPsgudInfoKorInfoRowUiModel)->Unit = {}
 ){
     // Dialog 표시 상태 관리
-    val showDialog =  rememberSaveable {  mutableStateOf(false) }
+    val showBookMarkDialog =  rememberSaveable {  mutableStateOf(false) }
+    val showBookMarkDeleteDialog =  rememberSaveable {  mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier
@@ -84,26 +88,50 @@ private fun ArtProductDetailScreen(
             HayMoonToolbar(
                 toolbarString = toolbarString,
                 isBackBtnNeeded = true,
+                isBookMarked = productInfo.isBookMarked,
                 isBookMarBtnNeeded = true,
                 onBackBtnClicked = { onBackBtnClicked() },
-                onBookMarkBtnClicked = {  showDialog.value = true }
+                onBookMarkBtnClicked = {
+                    if(productInfo.isBookMarked){
+                        showBookMarkDeleteDialog.value = true
+                    }else{
+                        showBookMarkDialog.value = true
+                    }
+                }
             )
         }
     ) { contentPadding->
-        if(showDialog.value){//dialog 보여줘야 할떄
+        if(showBookMarkDeleteDialog.value){
+            HayMoonDialog(
+                message = "즐겨찾기에서 삭제할까요?",
+                confirmButtonText = "확인",
+                dismissButtonText = "취소",
+                onConfirmClicked = {
+                    onBookMarkDeleteClicked(productInfo)
+                    showBookMarkDeleteDialog.value = false
+                },
+                onDismissClicked = {
+                    showBookMarkDeleteDialog.value = false
+                },
+                onDismissRequest = {
+                    showBookMarkDeleteDialog.value = false
+                }
+            )
+        }
+        if(showBookMarkDialog.value){//dialog 보여줘야 할떄
             HayMoonDialog(
                 message = "즐겨찾기에 추가할까요?",
                 confirmButtonText = "확인",
                 dismissButtonText = "취소",
                 onConfirmClicked = {
                     onBookMarkClicked(productInfo)
-                    showDialog.value = false
+                    showBookMarkDialog.value = false
                 },
                 onDismissClicked = {
-                    showDialog.value = false
+                    showBookMarkDialog.value = false
                 },
                 onDismissRequest = {
-                    showDialog.value = false
+                    showBookMarkDialog.value = false
                 }
             )
         }
@@ -247,6 +275,9 @@ fun ArtProductDetailScreenPreview() {
             modifier = Modifier,
             toolbarString = "꿈은 이루어진다.",
             productInfo = mockInfo,
+            onBackBtnClicked = {},
+            onBookMarkClicked = {},
+            onBookMarkDeleteClicked = {}
         )
     }
 }

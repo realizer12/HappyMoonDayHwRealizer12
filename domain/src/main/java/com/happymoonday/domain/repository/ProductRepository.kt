@@ -1,6 +1,7 @@
 package com.happymoonday.domain.repository
 
 import com.happymoonday.domain.model.SemaPsgudInfoKorInfoEntity
+import com.happymoonday.domain.model.SemaPsgudInfoKorInfoRowEntity
 
 /**
  * Create Date: 2024. 11. 24.
@@ -27,5 +28,26 @@ interface ProductRepository {
         manageYear: String,
         productNameKR: String
     ):Result<SemaPsgudInfoKorInfoEntity>
+
+    /**
+     * 소장품 즐겨찾기 설정
+     **/
+    suspend fun setBookMarkArtProduct(
+        semaPsgudInfoKorInfoRowEntity:SemaPsgudInfoKorInfoRowEntity
+    ):Result<Unit>
+
+    /**
+     * 소장품 즐겨찾기 해제
+     *
+     * @param productId 로컬 저장에 사용된  소장품 아이디를 보낸다
+     **/
+    suspend fun removeBookMarkArtProduct(
+        productId:Long,
+    ):Result<Unit>
+
+    /**
+     * 즐겨찾기한 소장품 리스트 가져오기
+     **/
+    suspend fun getBookMarkArtProductList():Result<List<SemaPsgudInfoKorInfoRowEntity>>
 }
 

@@ -2,6 +2,7 @@ package com.happymoonday.local.room.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.happymoonday.local.model.SemaPsgudInfoKorInfoRowLocalDataModel
 import com.happymoonday.local.room.dao.FavoriteCollectionDao
 
 /**
@@ -16,10 +17,10 @@ import com.happymoonday.local.room.dao.FavoriteCollectionDao
  *
  **/
 @Database(
-    entities = [],
-    version = 1,
+    entities = [SemaPsgudInfoKorInfoRowLocalDataModel::class],
+    version = 2,
     exportSchema = false
 )
-internal abstract class HayMoonLocalDataBase:RoomDatabase() {
+abstract class HayMoonLocalDataBase:RoomDatabase() {
     abstract fun getFavoriteCollectionDao(): FavoriteCollectionDao
 }

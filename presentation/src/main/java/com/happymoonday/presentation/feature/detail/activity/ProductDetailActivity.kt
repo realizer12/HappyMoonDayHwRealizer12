@@ -1,13 +1,17 @@
 package com.happymoonday.presentation.feature.detail.activity
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import com.happymoonday.design.compose.theme.HayMoonTheme
 import com.happymoonday.presentation.feature.detail.screen.ArtProductDetailRoute
 import com.happymoonday.presentation.feature.detail.viewmodel.ProductDetailViewModel
+import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoRowUiModel
+import com.happymoonday.presentation.util.SingleEventObserver
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -36,19 +40,44 @@ class ProductDetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val artProductInfo = rememberSaveable {
+                mutableStateOf<SemaPsgudInfoKorInfoRowUiModel?>(null)
+            }
+            LaunchedEffect(Unit) {
+
+                //상세 상품  정보 가져오기
+                productDetailViewModel.productDetailInfo.observe(this@ProductDetailActivity) {
+                    artProductInfo.value = it
+                }
+
+                //북마크 성공시 처리
+                productDetailViewModel.isBookMarkSuccess.observe(this@ProductDetailActivity,SingleEventObserver {
+                   if(it){
+                       setResult(BOOK_MARK_FINISH_RESULT_CODE)
+                       finish()
+                   }
+                })
+
+                //북마크 삭제 성공시 처리
+                productDetailViewModel.isDeleteBookMarkSuccess.observe(this@ProductDetailActivity,SingleEventObserver {
+                    if(it){
+                        setResult(BOOK_MARK_FINISH_RESULT_CODE)
+                        finish()
+                    }
+                })
+            }
             HayMoonTheme {
-                productDetailViewModel.getProductDetailInfo()?.let { productDetailInfo ->
+                artProductInfo.value?.let {
                     ArtProductDetailRoute(
-                        semaPsgudInfoKorInfoRowUiModel = productDetailInfo,
+                        semaPsgudInfoKorInfoRowUiModel = it,
                         onBackBtnClicked = {//뒤로가기 처리
                             finish()
                         },
                         onBookMarkClicked = { clickedArtProductInfo ->
-                            // 북마크 실행시
-                            Toast.makeText(this, clickedArtProductInfo.productName, Toast.LENGTH_SHORT).show()
-                            setResult(BOOK_MARK_FINISH_RESULT_CODE)
-                            finish()
-
+                            productDetailViewModel.setBookMarkArtProduct(clickedArtProductInfo)
+                        },
+                        onBookMarkDeleteClicked = {
+                            productDetailViewModel.removeBookMarkArtProduct(it.id)
                         }
                     )
                 }

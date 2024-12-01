@@ -11,3 +11,8 @@ package com.happymoonday.presentation.mapper
 internal interface FromEntityMapper <T,E> {
     fun E.fromEntity():T
 }
+
+internal interface ToEntityMapper <T,E> {
+    fun E.toEntity():T
+}
+

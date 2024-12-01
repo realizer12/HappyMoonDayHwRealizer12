@@ -2,6 +2,7 @@ package com.happymoonday.local.di
 
 import android.content.Context
 import androidx.room.Room
+import com.happymoonday.local.room.dao.FavoriteCollectionDao
 import com.happymoonday.local.room.database.HayMoonLocalDataBase
 import dagger.Module
 import dagger.Provides
@@ -24,16 +25,22 @@ import javax.inject.Singleton
 internal object LocalDataBaseSettingModule {
 
     //room 주입용
-    @Singleton
     @Provides
+    @Singleton
     fun provideRoomDataBase(
         @ApplicationContext context: Context
     ): HayMoonLocalDataBase {
         return Room.databaseBuilder(
-            context.applicationContext,
+            context,
             HayMoonLocalDataBase::class.java,
-            "_hay_moon_local-database.db"
+            "hay_moon_local-database.db"
         ).fallbackToDestructiveMigration()
           .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideFavoriteCollectionDao(
+        hayMoonLocalDataBase: HayMoonLocalDataBase
+    ) :FavoriteCollectionDao = hayMoonLocalDataBase.getFavoriteCollectionDao()
 }

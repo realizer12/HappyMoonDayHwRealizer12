@@ -1,8 +1,12 @@
 package com.happymoonday.data.repository.impl
 
+import com.happymoonday.data.datasource.ProductLocalDataSource
 import com.happymoonday.data.datasource.ProductRemoteDataSource
 import com.happymoonday.data.model.SemaPsgudInfoKorInfoResponseDataModel.Companion.toEntity
+import com.happymoonday.data.model.SemaPsgudInfoKorInfoRowDataModel.DataMapper.fromEntity
+import com.happymoonday.data.model.SemaPsgudInfoKorInfoRowDataModel.DataMapper.toEntity
 import com.happymoonday.domain.model.SemaPsgudInfoKorInfoEntity
+import com.happymoonday.domain.model.SemaPsgudInfoKorInfoRowEntity
 import com.happymoonday.domain.repository.ProductRepository
 import javax.inject.Inject
 
@@ -16,6 +20,7 @@ import javax.inject.Inject
  **/
 class ProductRepositoryImpl @Inject constructor(
     private val productRemoteDataSource: ProductRemoteDataSource,
+    private val productLocalDataSource: ProductLocalDataSource
 ) : ProductRepository {
     override suspend fun getSearchedProducts(
         startIndex: Int,
@@ -31,4 +36,18 @@ class ProductRepositoryImpl @Inject constructor(
             manageYear = manageYear,
             productNameKR = productNameKR
         ).map { it.toEntity() }
+
+    override suspend fun setBookMarkArtProduct(semaPsgudInfoKorInfoRowEntity: SemaPsgudInfoKorInfoRowEntity): Result<Unit> {
+        return productLocalDataSource.setBookMarkArtProduct(semaPsgudInfoKorInfoRowEntity.fromEntity())
+    }
+
+    override suspend fun removeBookMarkArtProduct(productId: Long): Result<Unit> {
+        return productLocalDataSource.removeBookMarkArtProduct(productId)
+    }
+
+    override suspend fun getBookMarkArtProductList(): Result<List<SemaPsgudInfoKorInfoRowEntity>> {
+        return productLocalDataSource.getBookMarkArtProductList().map {
+            it.map { it.toEntity() }
+        }
+    }
 }

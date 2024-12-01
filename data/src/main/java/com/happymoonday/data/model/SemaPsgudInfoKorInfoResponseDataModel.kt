@@ -1,5 +1,6 @@
 package com.happymoonday.data.model
 
+import com.happymoonday.data.mapper.FromEntityMapper
 import com.happymoonday.data.mapper.ToEntityMapper
 import com.happymoonday.data.model.SemaPsgudInfoKorInfoRowDataModel.DataMapper.toEntity
 import com.happymoonday.domain.model.SemaPsgudInfoKorInfoEntity
@@ -58,6 +59,7 @@ data class ResultDataModel(
  * @param thumb_image 썸네일이미지
  **/
 data class SemaPsgudInfoKorInfoRowDataModel(
+    val id: Long = 0,
     val prdct_cl_nm: String?,
     val manage_no_year: String?,
     val prdct_nm_korean: String?,
@@ -71,19 +73,38 @@ data class SemaPsgudInfoKorInfoRowDataModel(
     val thumb_image: String,
 ) {
     internal companion object DataMapper :
-        ToEntityMapper<SemaPsgudInfoKorInfoRowDataModel, SemaPsgudInfoKorInfoRowEntity> {
+        ToEntityMapper<SemaPsgudInfoKorInfoRowDataModel, SemaPsgudInfoKorInfoRowEntity>,
+        FromEntityMapper<SemaPsgudInfoKorInfoRowEntity, SemaPsgudInfoKorInfoRowDataModel> {
+        override fun SemaPsgudInfoKorInfoRowEntity.fromEntity(): SemaPsgudInfoKorInfoRowDataModel {
+            return SemaPsgudInfoKorInfoRowDataModel(
+                id = id,
+                prdct_cl_nm = productCategory,
+                manage_no_year = dateOfCollection,
+                prdct_nm_korean = productName,
+                prdct_nm_eng = productNameEn,
+                prdct_stndrd = productStandard,
+                mnfct_year = dateOfMade,
+                matrl_technic = materialTechInfo,
+                prdct_detail = null,
+                writr_nm = writerName,
+                main_image = mainImage,
+                thumb_image = thumbNailImage,
+            )
+        }
+
         override fun SemaPsgudInfoKorInfoRowDataModel.toEntity(): SemaPsgudInfoKorInfoRowEntity {
             return SemaPsgudInfoKorInfoRowEntity(
-                productCategory = prdct_cl_nm?:"부문 미상",
-                dateOfCollection = manage_no_year?:"수집년도 미상",
-                productName = prdct_nm_korean?:"작품명 미상",
+                id = id,
+                productCategory = prdct_cl_nm ?: "부문 미상",
+                dateOfCollection = manage_no_year ?: "수집년도 미상",
+                productName = prdct_nm_korean ?: "작품명 미상",
                 writerName = writr_nm,
                 productStandard = prdct_stndrd,
                 dateOfMade = mnfct_year,
                 materialTechInfo = matrl_technic,
                 mainImage = main_image,
                 thumbNailImage = thumb_image,
-                productNameEn = prdct_nm_eng?:"no name",
+                productNameEn = prdct_nm_eng ?: "no name",
             )
         }
     }

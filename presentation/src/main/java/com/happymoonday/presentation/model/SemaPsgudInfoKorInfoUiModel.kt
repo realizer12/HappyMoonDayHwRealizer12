@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.happymoonday.domain.model.SemaPsgudInfoKorInfoEntity
 import com.happymoonday.domain.model.SemaPsgudInfoKorInfoRowEntity
 import com.happymoonday.presentation.mapper.FromEntityMapper
+import com.happymoonday.presentation.mapper.ToEntityMapper
 import com.happymoonday.presentation.model.SemaPsgudInfoKorInfoRowUiModel.Companion.fromEntity
 import kotlinx.parcelize.Parcelize
 
@@ -38,9 +39,11 @@ data class SemaPsgudInfoKorInfoUiModel(
  * @param materialTechInfo 재료/기법
  * @param mainImage 메인이미지
  * @param thumbNailImage 썸네일이미지
+ * @param isBookMarked 즐겨찾기 여부
  **/
 @Parcelize
 data class SemaPsgudInfoKorInfoRowUiModel(
+    val id:Long = 0,
     val productCategory: String,
     val dateOfMade: String,
     val dateOfCollection: String,
@@ -51,11 +54,29 @@ data class SemaPsgudInfoKorInfoRowUiModel(
     val materialTechInfo: String,
     val mainImage: String,
     val thumbNailImage: String,
+    var isBookMarked:Boolean = false,
 ) : Parcelable {
     internal companion object :
-        FromEntityMapper<SemaPsgudInfoKorInfoRowUiModel, SemaPsgudInfoKorInfoRowEntity> {
+        FromEntityMapper<SemaPsgudInfoKorInfoRowUiModel, SemaPsgudInfoKorInfoRowEntity>,ToEntityMapper<SemaPsgudInfoKorInfoRowEntity,SemaPsgudInfoKorInfoRowUiModel> {
         override fun SemaPsgudInfoKorInfoRowEntity.fromEntity(): SemaPsgudInfoKorInfoRowUiModel {
             return SemaPsgudInfoKorInfoRowUiModel(
+                id = id,
+                productCategory = productCategory,
+                dateOfMade = dateOfMade,
+                dateOfCollection = dateOfCollection,
+                productName = productName,
+                writerName = writerName,
+                productStandard = productStandard,
+                materialTechInfo = materialTechInfo,
+                mainImage = mainImage,
+                thumbNailImage = thumbNailImage,
+                productNameEn = productNameEn
+            )
+        }
+
+        override fun SemaPsgudInfoKorInfoRowUiModel.toEntity(): SemaPsgudInfoKorInfoRowEntity {
+            return SemaPsgudInfoKorInfoRowEntity(
+                id = id,
                 productCategory = productCategory,
                 dateOfMade = dateOfMade,
                 dateOfCollection = dateOfCollection,

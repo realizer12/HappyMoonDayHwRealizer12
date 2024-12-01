@@ -26,10 +26,6 @@ android {
             excludes.add("META-INF/gradle/incremental.annotation.processors")
         }
     }
-    configurations {
-        create("cleanedAnnotations")
-        implementation { exclude(group = "org.jetbrains", module = "annotations") }
-    }
     buildFeatures{
         viewBinding = true
         dataBinding = true
@@ -54,7 +50,8 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
-
+    implementation(libs.annotations)
+    implementation(libs.androidx.annotation)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

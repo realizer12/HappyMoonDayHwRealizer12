@@ -21,6 +21,7 @@ data class SemaPsgudInfoKorInfoEntity(
  * @param thumbNailImage 썸네일이미지
  **/
 data class SemaPsgudInfoKorInfoRowEntity(
+    val id:Long,
     val productCategory: String,
     val dateOfMade: String,
     val dateOfCollection: String,
