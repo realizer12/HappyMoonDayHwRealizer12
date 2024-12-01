@@ -36,6 +36,10 @@ class SearchViewModel @Inject constructor(
     private val _searchArtProductList = MutableLiveData<List<SemaPsgudInfoKorInfoRowUiModel>>()
     val searchArtProductList: LiveData<List<SemaPsgudInfoKorInfoRowUiModel>> = _searchArtProductList
 
+    //original 원본 List(필터 적용이 안된)
+    //_searchArtProductList의 경우 filter적용된 리스트만 보관
+    private val originalCachedSearchArtProductList = mutableListOf<SemaPsgudInfoKorInfoRowUiModel>()
+
     //progress 이벤트 LiveData
     private val _progress = MutableLiveData<Boolean>()
     val progress: LiveData<Boolean> = _progress
@@ -54,7 +58,7 @@ class SearchViewModel @Inject constructor(
     private val productionYearFilterList = getProductionYearFilterUseCase()
 
     //미술품 카테고리 필터 데이터 리스트
-    private val artCategoryFilterList = getArtCategoryFilterUseCase()
+    private var artCategoryFilterList = getArtCategoryFilterUseCase()
 
     //제작년도 필터 뷰에 보이는 문구 처리 LiveData
     private val _productYearFilterString = MutableLiveData<String>()
@@ -89,9 +93,11 @@ class SearchViewModel @Inject constructor(
     }
 
     /**
-     * 재작년도 선택시 수정사항들 처리
+     * 재작년도 필터 선택시 업데이트 처리
+     *
+     * @param selectedProductionYearFilter 선택된 재작년도 필터
     **/
-    fun setSelectedProductionFilterType(selectedProductionYearFilter: SearchFilterEntity.ProductionYearFilter) {
+    fun updateProductionFilterType(selectedProductionYearFilter: SearchFilterEntity.ProductionYearFilter) {
 
         //이미 선택된 값이면 early return - 로직 안돌게 하기
         if(productionYearFilterList.find { it.isSelected } == selectedProductionYearFilter) return
@@ -106,7 +112,42 @@ class SearchViewModel @Inject constructor(
 
         //현재 list기준으로 filter값 적용
         val currentList = _searchArtProductList.value ?: emptyList()
-        _searchArtProductList.value =  currentList.ifEmpty { return }.sortArtListWithProductionFilter()
+
+        //currentList가 없으면 return
+        //그외에는 필터링 진행 하여, 뷰 업데이트
+        _searchArtProductList.value =  currentList.ifEmpty { return }
+            .sortArtListWithCategoryFilter()
+            .sortArtListWithProductionFilter()
+    }
+
+    /**
+     * 미술품 카테고리 필터 선택후 업데이트 처리 진행
+     *
+     * @param updatedArtCategoryFilterList 업데이트된  미술품 카테고리 필터 리스트
+     *
+     **/
+    fun updateArtCategoryFilterType(updatedArtCategoryFilterList: List<SearchFilterEntity.ArtCategoryFilter>) {
+
+        //새로 업데이트된 카테고리 리스트 넣어줌.
+        artCategoryFilterList = updatedArtCategoryFilterList
+
+        //미술품 카테고리 필터 뷰에 보이는 문구 변경
+        _artCategoryFilterString.value = artCategoryFilterList.returnArtCategoryFilterString()
+
+        //카테고리 업데이트는 기존 원본에는 있지만 뷰에는 업데이트 안된
+        //데이터가 있을수 있으므로 원본 기준으로 다시 진행
+        _searchArtProductList.value =
+            originalCachedSearchArtProductList.ifEmpty { return }
+                .sortArtListWithCategoryFilter()
+                .sortArtListWithProductionFilter()
+    }
+
+    //가장 최신 카테고리 필터 기준으로 미술품 리스트 filter 처리하여 return
+    private fun List<SemaPsgudInfoKorInfoRowUiModel>.sortArtListWithCategoryFilter(): List<SemaPsgudInfoKorInfoRowUiModel> {
+        val selectedCategories = artCategoryFilterList.filter { it.isSelected }.map { it.filterType }
+        return this.filter {
+            selectedCategories.contains(SearchFilterEntity.ArtCategoryFilter.returnArtCategoryFilterType(it.productCategory))  // 또는 artwork의 카테고리 필드명에 맞게 수정
+        }
     }
 
     //가장 최신 재작년도 필터 기준으로 sort 처리 진행
@@ -144,10 +185,12 @@ class SearchViewModel @Inject constructor(
         //다음 페이지 요청이 아니라면 검색 다시 하는 것이므로,
         //1. startIndex 초기화 및 이전 검색어 초기화
         //2. currentList도 emptylist로 초기화
+        //3. originalList도 초기화
         if (!isNextPageRequest) {
             pastSearchKeyWord = keyword
             searchDataStartIndex = 0
             currentList = emptyList()
+            updateOriginalSearchedProductList(emptyList())
         }
 
         viewModelScope.launch {
@@ -163,7 +206,8 @@ class SearchViewModel @Inject constructor(
 
                 //현재 리스트에서 새로운 list 추가 해서 뷰로 보냄.
                 //새로운 리스트 기준 필터처리 계속 적용
-                _searchArtProductList.value = (currentList + it.semaPsgudInfoList).sortArtListWithProductionFilter()
+                updateOriginalSearchedProductList(currentList + it.semaPsgudInfoList)
+                _searchArtProductList.value = (currentList + it.semaPsgudInfoList).sortArtListWithCategoryFilter().sortArtListWithProductionFilter()
             }.onFailure {
                 showProgress(isShow = false)
                 when (it) {
@@ -179,6 +223,13 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    //원본 검색 리스트 업데이트
+    //clear 시키고 현재 검색된 모든 미술품 리스트를 넣는다.
+    private fun updateOriginalSearchedProductList(newList: List<SemaPsgudInfoKorInfoRowUiModel>){
+        originalCachedSearchArtProductList.clear()
+        originalCachedSearchArtProductList.addAll(newList)
+    }
+
     //progress bar 보여주기 여부
     private fun showProgress(isShow: Boolean){
         _progress.value = isShow
@@ -186,6 +237,7 @@ class SearchViewModel @Inject constructor(
 
     //검색된 리스트 초기화
     private fun clearSearchedDataWhenNoSearchResult(){
+        updateOriginalSearchedProductList(emptyList())
         _searchArtProductList.value = emptyList()
     }
 

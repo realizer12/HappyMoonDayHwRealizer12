@@ -1,6 +1,5 @@
 package com.happymoonday.presentation.feature.search.activity
 
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
@@ -95,7 +94,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
             ProductionYearFilterBottomDialogFragment.getInstance(
                 productionYearFilterList = searchViewModel.getProductYearFilterList(),
                 productionYearFilterClicked = {
-                   searchViewModel.setSelectedProductionFilterType(selectedProductionYearFilter = it)
+                   searchViewModel.updateProductionFilterType(selectedProductionYearFilter = it)
                    searchListScrollToTop()
                 }
             ).show(supportFragmentManager, "ProductionYearFilterBottomDialogFragment")
@@ -106,8 +105,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(R.layout.activity_sea
             ArtCategoryFilterBottomDialogFragment.getInstance(
                 artCategoryFilterList = searchViewModel.getArtCategoryFilterList(),
                 artCategoryFilterClicked = {
-
-                    Log.v("asdasdasd ", it.toString())
+                    searchViewModel.updateArtCategoryFilterType(updatedArtCategoryFilterList = it)
                     searchListScrollToTop()
                 }
             ).show(supportFragmentManager, "ArtCategoryFilterBottomDialogFragment")
